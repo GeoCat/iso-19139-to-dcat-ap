@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
@@ -145,7 +144,7 @@
 	<xsl:variable name="CatOrgNameANSI">StockholmsStad</xsl:variable>
 	<xsl:variable name="CatOrgEmail">oppnadata@stockholm.se</xsl:variable>
 	
-	
+	<xsl:variable name="ifNoEmail">oppnadata@stockholm.se</xsl:variable>
 	
 	<!-- NV -->
 	<!--	<xsl:variable name="iso2letterLanguageCode">sv</xsl:variable>
@@ -620,7 +619,7 @@
 				<xsl:when
 					test="gmd:identificationInfo/*/gmd:language/gmd:LanguageCode/@codeListValue != ''">
 					<xsl:value-of
-						select="translate(gmd:identificationInfo/*/gmd:language/gmd:LanguageCode/@codeListValue, $uppercase, $lowercase)"
+						select="translate(gmd:identificationInfo/*/gmd:language[1]/gmd:LanguageCode/@codeListValue, $uppercase, $lowercase)"
 					/>
 				</xsl:when>
 				<xsl:when test="gmd:identificationInfo/*/gmd:language/gmd:LanguageCode != ''">
@@ -780,8 +779,8 @@
     </xsl:param>
 -->
 		<xsl:param name="Lineage">
-			<xsl:for-each select="gmd:dataQualityInfo/*/gmd:lineage/*/gmd:statement">
-				<!--<dct:provenance>
+			<!--<xsl:for-each select="gmd:dataQualityInfo/*/gmd:lineage/*/gmd:statement">
+				<dct:provenance>
 					<dct:ProvenanceStatement>
 						<rdfs:label xml:lang="{$MetadataLanguage}">
 							<xsl:value-of select="normalize-space(gco:CharacterString)"/>
@@ -790,8 +789,8 @@
 							<xsl:with-param name="term">rdfs:label</xsl:with-param>
 						</xsl:call-template>
 					</dct:ProvenanceStatement>
-				</dct:provenance>-->
-			</xsl:for-each>
+				</dct:provenance>
+			</xsl:for-each>-->
 		</xsl:param>
 
 		<xsl:param name="MetadataDate">
@@ -1151,6 +1150,9 @@
       </dct:description>
 -->
 			<xsl:copy-of select="$ResourceAbstract"/>
+			<xsl:apply-templates select="gmd:identificationInfo/*/gmd:topicCategory">
+				<xsl:with-param name="MetadataLanguage" select="$MetadataLanguage"/>
+			</xsl:apply-templates>
 			<!-- Maintenance information (tentative) -->
 			<xsl:for-each select="gmd:identificationInfo/*/gmd:resourceMaintenance">
 				<xsl:apply-templates
@@ -1159,7 +1161,7 @@
 			</xsl:for-each>
 			<!-- Topic category -->
 			<xsl:if test="$profile = $extended">
-				<xsl:apply-templates select="gmd:identificationInfo/*/gmd:topicCategory">
+				<xsl:apply-templates select="gmd:identificationInfo/*/gmd:language">
 					<xsl:with-param name="MetadataLanguage" select="$MetadataLanguage"/>
 				</xsl:apply-templates>
 			</xsl:if>
@@ -1785,8 +1787,10 @@
 			<xsl:for-each
 				select="gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/*">
 				<vcard:hasEmail rdf:resource="mailto:{normalize-space(.)}"/>
-
 			</xsl:for-each>
+			<xsl:if test="not(gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/*)">ß
+				<vcard:hasEmail rdf:resource="mailto:{$ifNoEmail}"/>
+			</xsl:if>
  			<!--<vcard:hasEmail rdf:resource="mailto:11800.stockholm.se"/> -->
 	</xsl:param>
 		<xsl:param name="URL">
@@ -2959,6 +2963,39 @@
 		</xsl:param>
 		<xsl:if test="$TopicCategory != ''">
 			<dct:subject rdf:resource="{$TopicCategoryCodelistUri}/{$TopicCategory}"/>
+			
+			<xsl:choose>
+				<xsl:when test="$TopicCategory = 'farming'">
+					<dcat:theme rdf:resource="http://publications.europa.eu/resource/authority/data-theme/AGRI" />
+				</xsl:when>
+				<xsl:when test="$TopicCategory = 'economy'">
+					<dcat:theme rdf:resource="http://publications.europa.eu/resource/authority/data-theme/ECON" />
+				</xsl:when>
+				<xsl:when test="$TopicCategory = 'planningCadastre'">
+					<dcat:theme rdf:resource="http://publications.europa.eu/resource/authority/data-theme/GOVE" />
+				</xsl:when>
+				<xsl:when test="$TopicCategory = 'health'">
+					<dcat:theme rdf:resource="http://publications.europa.eu/resource/authority/data-theme/HEAL" />
+				</xsl:when>
+				<xsl:when test="$TopicCategory = 'intelligenceMilitary'">
+					<dcat:theme rdf:resource="http://publications.europa.eu/resource/authority/data-theme/JUST" />
+				</xsl:when>
+				<xsl:when test="$TopicCategory = 'society' or $TopicCategory = 'structure'">
+					<dcat:theme rdf:resource="http://publications.europa.eu/resource/authority/data-theme/SOCI" />
+				</xsl:when>
+				<xsl:when test="$TopicCategory = 'boundaries'">
+					<dcat:theme rdf:resource="http://publications.europa.eu/resource/authority/data-theme/REGI" />
+				</xsl:when>
+				<xsl:when test="$TopicCategory = 'geoscientificInformation' or $TopicCategory = 'utilitiesCommunication' or $TopicCategory = 'imageryBaseMapsEarthCover' or $TopicCategory = 'location'">
+					<dcat:theme rdf:resource="http://publications.europa.eu/resource/authority/data-theme/TECH" />
+				</xsl:when>
+				<xsl:when test="$TopicCategory = 'inlandWaters' or $TopicCategory = 'transport'">
+					<dcat:theme rdf:resource="http://publications.europa.eu/resource/authority/data-theme/TRAN" />
+				</xsl:when>
+				<xsl:otherwise>
+					<dcat:theme rdf:resource="http://publications.europa.eu/resource/authority/data-theme/ENVI" />
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:if>
 	</xsl:template>
 
