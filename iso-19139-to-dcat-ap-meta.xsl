@@ -2439,11 +2439,11 @@
             <xsl:for-each select="gmd:description">
               <rdfs:label xml:lang="{$MetadataLanguage}"><xsl:value-of select="gco:CharacterString"/></rdfs:label>
             </xsl:for-each>
--->
+--><foo>
 		<xsl:apply-templates select="gmd:EX_GeographicDescription/gmd:geographicIdentifier/*">
 			<xsl:with-param name="MetadataLanguage" select="$MetadataLanguage"/>
 		</xsl:apply-templates>
-		<xsl:apply-templates select="gmd:EX_GeographicBoundingBox"/>
+		<xsl:apply-templates select="gmd:EX_GeographicBoundingBox"/></foo>
 		<!--
           </dct:Location>
         </dct:spatial>
@@ -2560,41 +2560,7 @@
     <xsl:param name="DCTBox">northlimit=<xsl:value-of select="$north"/>; eastlimit=<xsl:value-of select="$east"/>; southlimit=<xsl:value-of select="$south"/>; westlimit=<xsl:value-of select="$west"/>; projection=EPSG:<xsl:value-of select="$srid"/></xsl:param>
 -->
 
-		<!-- Bbox as GML (GeoSPARQL) -->
-
-		<xsl:param name="GMLLiteral">
-			<xsl:choose>
-				<xsl:when test="$SrsUri = 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'"
-					>&lt;gml:Envelope srsName="<xsl:value-of select="$SrsUri"
-						/>"&gt;&lt;gml:lowerCorner&gt;<xsl:value-of select="$west"/>
-					<xsl:text> </xsl:text>
-					<xsl:value-of select="$south"
-						/>&lt;/gml:lowerCorner&gt;&lt;gml:upperCorner&gt;<xsl:value-of
-						select="$east"/>
-					<xsl:text> </xsl:text>
-					<xsl:value-of select="$north"
-					/>&lt;/gml:upperCorner&gt;&lt;/gml:Envelope&gt;</xsl:when>
-				<xsl:when test="$SrsAxisOrder = 'LonLat'">&lt;gml:Envelope srsName="<xsl:value-of
-						select="$SrsUri"/>"&gt;&lt;gml:lowerCorner&gt;<xsl:value-of select="$west"/>
-					<xsl:text> </xsl:text>
-					<xsl:value-of select="$south"
-						/>&lt;/gml:lowerCorner&gt;&lt;gml:upperCorner&gt;<xsl:value-of
-						select="$east"/>
-					<xsl:text> </xsl:text>
-					<xsl:value-of select="$north"
-					/>&lt;/gml:upperCorner&gt;&lt;/gml:Envelope&gt;</xsl:when>
-				<xsl:when test="$SrsAxisOrder = 'LatLon'">&lt;gml:Envelope srsName="<xsl:value-of
-						select="$SrsUri"/>"&gt;&lt;gml:lowerCorner&gt;<xsl:value-of select="$south"/>
-					<xsl:text> </xsl:text>
-					<xsl:value-of select="$west"
-						/>&lt;/gml:lowerCorner&gt;&lt;gml:upperCorner&gt;<xsl:value-of
-						select="$north"/>
-					<xsl:text> </xsl:text>
-					<xsl:value-of select="$east"
-					/>&lt;/gml:upperCorner&gt;&lt;/gml:Envelope&gt;</xsl:when>
-			</xsl:choose>
-		</xsl:param>
-
+	
 		<!-- Bbox as WKT (GeoSPARQL) -->
 
 		<xsl:param name="WKTLiteral">
@@ -2638,37 +2604,6 @@
 			</xsl:choose>
 		</xsl:param>
 
-		<!-- Bbox as GeoJSON -->
-
-		<xsl:param name="GeoJSONLiteral"
-				>{"type":"Polygon","crs":{"type":"name","properties":{"name":"<xsl:value-of
-				select="$SrsUrn"/>"}},"coordinates":[[[<xsl:value-of select="$west"/>
-			<xsl:text>,</xsl:text>
-			<xsl:value-of select="$north"/>],[<xsl:value-of select="$east"/>
-			<xsl:text>,</xsl:text>
-			<xsl:value-of select="$north"/>],[<xsl:value-of select="$east"/>
-			<xsl:text>,</xsl:text>
-			<xsl:value-of select="$south"/>],[<xsl:value-of select="$west"/>
-			<xsl:text>,</xsl:text>
-			<xsl:value-of select="$south"/>],[<xsl:value-of select="$west"/>
-			<xsl:text>,</xsl:text>
-			<xsl:value-of select="$north"/>]]]}</xsl:param>
-		<!--		<dct:spatial rdf:parseType="Resource">
-			 Recommended geometry encodings 
-			<locn:geometry rdf:datatype="{$gsp}wktLiteral">
-				<xsl:value-of select="$WKTLiteral"/>
-			</locn:geometry>
-			<locn:geometry rdf:datatype="{$gsp}gmlLiteral">
-				<xsl:value-of select="$GMLLiteral"/>
-			</locn:geometry>
-			<!-\- Additional geometry encodings -\->
-			<locn:geometry rdf:datatype="{$geojsonMediaTypeUri}">
-				<xsl:value-of select="$GeoJSONLiteral"/>
-			</locn:geometry>
-			
-      locn:geometry rdf:datatype="{$dct}Box"><xsl:value-of select="$DCTBox"/></locn:geometry>
-
-		</dct:spatial>-->
 	</xsl:template>
 
 	<!-- Temporal extent -->
