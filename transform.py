@@ -47,21 +47,21 @@ def main(args):
     xsl_transform = etree.XSLT(process_xsl)
     cnt = 0
     input_xml = etree.parse(input_xml_filename, parser)
-    mds = input_xml.xpath('//gmd:MD_Metadata',namespaces={'gmd': 'http://www.isotc211.org/2005/gmd'})
-    for elm in mds:
+    #mds = input_xml.xpath('//gmd:MD_Metadata',namespaces={'gmd': 'http://www.isotc211.org/2005/gmd'})
+    #for elm in mds:
+    try:
+        output_xml = xsl_transform(input_xml)
+    except:
+        print(xsl_transform.error_log)     
+    cnt = cnt + 1
+    with open(str(cnt) + '.xml', 'w') as output_xml_file:
         try:
-           output_xml = xsl_transform(elm)
+            output_xml_file.write(
+                etree.tostring(
+                    output_xml,
+                    pretty_print=True).decode())
         except:
-            print(xsl_transform.error_log)     
-        cnt = cnt + 1
-        with open(str(cnt) + '.xml', 'w') as output_xml_file:
-            try:
-                output_xml_file.write(
-                    etree.tostring(
-                        output_xml,
-                        pretty_print=True).decode())
-            except:
-                print (str(cnt)+' has error')
+            print (str(cnt)+' has error')
 
 class FileResolver(etree.Resolver):
        def resolve(self, url, pubid, context):
