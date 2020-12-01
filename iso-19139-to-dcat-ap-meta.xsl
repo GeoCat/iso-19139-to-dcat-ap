@@ -393,7 +393,7 @@
 				<xsl:value-of select="$catGNBaseUrl"/>/srv/eng/rdf.search?any= </void:uriLookupEndpoint>
 			<!-- The entity responsible for making the catalog online. -->
 			<dct:publisher>
-				<foaf:Agent
+				<foaf:Organization
 					rdf:about="https://resources.geodata.se/codelist/organisationer/lantmateriet">
 					<foaf:name>
 						<xsl:value-of select="$CatOrgName"/>
@@ -403,7 +403,7 @@
 					<dct:type rdf:resource="http://purl.org/adms/publishertype/LocalAuthority"/>
 					<foaf:mbox rdf:resource="mailto:{$CatOrgEmail}"/>
 
-				</foaf:Agent>
+				</foaf:Organization>
 			</dct:publisher>
 			<!-- The knowledge organization system (KOS) used to classify catalog's datasets.
       -->
@@ -1724,22 +1724,8 @@
 				</xsl:call-template>
 			</xsl:for-each>
 		</xsl:param>
-		<xsl:param name="OrganisationURI">
-<!--			<xsl:value-of select="normalize-space(gmd:organisationName/*/@xlink:href)"/>-->
-			<xsl:value-of select="concat($catCLBaseUrl,'/organisation/',encode-for-uri(gmd:organisationName/gco:CharacterString),'/',$role)"/>
-			
-			
-		</xsl:param>
-		<xsl:param name="URI">
-			<xsl:choose>
-				<xsl:when test="$IndividualURI != ''">
-					<xsl:value-of select="$IndividualURI"/>
-				</xsl:when>
-				<xsl:when test="$OrganisationURI != ''">
-					<xsl:value-of select="$OrganisationURI"/>
-				</xsl:when>
-			</xsl:choose>
-		</xsl:param>
+		<xsl:param name="OrganisationURI" select="iso19139:processUrl(concat($catCLBaseUrl,'/organisation/',gmd:organisationName/gco:CharacterString,'/',tokenize(gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/*[normalize-space() != ''],'@')[1]))"/>
+		<xsl:param name="URI" select="$OrganisationURI"/>
 		<xsl:param name="OrganisationName">
 			<xsl:value-of select="normalize-space(gmd:organisationName/*)"/>
 		</xsl:param>
@@ -1817,9 +1803,19 @@
 		<xsl:param name="Telephone-vCard">
 			<xsl:for-each
 				select="gmd:contactInfo/gmd:CI_Contact/gmd:phone/gmd:CI_Telephone/gmd:voice/*">
-				<vcard:hasTelephone
-					rdf:resource="tel:+{translate(translate(translate(translate(translate(normalize-space(.),' ',''),'(',''),')',''),'+',''),'.','')}"
-				/>
+				<vcard:hasTelephone rdf:parseType="Resource">
+					<vcard:hasValue rdf:resource="tel:+{translate(translate(translate(translate(translate(normalize-space(.),' ',''),'(',''),')',''),'+',''),'.','')}"/>
+					<rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Work"/>
+					<rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Voice"/>
+				</vcard:hasTelephone>
+			</xsl:for-each>
+			<xsl:for-each
+				select="gmd:contactInfo/gmd:CI_Contact/gmd:phone/gmd:CI_Telephone/gmd:facsimile/*">
+				<vcard:hasTelephone rdf:parseType="Resource">
+					<vcard:hasValue rdf:resource="tel:+{translate(translate(translate(translate(translate(normalize-space(.),' ',''),'(',''),')',''),'+',''),'.','')}"/>
+					<rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Work"/>
+					<rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Fax"/>
+				</vcard:hasTelephone>
 			</xsl:for-each>
 		</xsl:param>
 		<xsl:param name="Address">
@@ -1910,59 +1906,59 @@
 		</xsl:param>
 		<xsl:param name="ROInfo">
 			<xsl:variable name="info">
-				<xsl:choose>
-					<!--<xsl:when test="$IndividualName != ''">
+				<!--<xsl:choose>
+					<xsl:when test="$IndividualName != ''">
 						<rdf:type rdf:resource="{$foaf}Person"/>
-					</xsl:when>-->
-					<xsl:when test="$OrganisationName != ''">
-						<rdf:type rdf:resource="{$foaf}Organization"/>
 					</xsl:when>
+					<xsl:when test="$OrganisationName != ''">-->
+						<rdf:type rdf:resource="{$foaf}Organization"/>
+					<!--</xsl:when>
 					<xsl:otherwise>
 						<rdf:type rdf:resource="{$foaf}Agent"/>
 					</xsl:otherwise>
-				</xsl:choose>
-				<xsl:if test="$IndividualName = 'xyx'">
-					<!--        
+				</xsl:choose>-->
+				<!--      <xsl:if test="$IndividualName = 'xyx'">
+					  
           <foaf:name xml:lang="{$MetadataLanguage}">
             <xsl:value-of select="$IndividualName"/>
           </foaf:name>
--->
+
 					<xsl:copy-of select="$IndividualName-FOAF"/>
-					<xsl:if test="$OrganisationName != ''">
+	-->				<!--  <xsl:if test="$OrganisationName != ''">
 						<org:memberOf>
 							<xsl:choose>
 								<xsl:when test="$OrganisationURI != ''">
 									<foaf:Organization rdf:about="{$OrganisationURI}">
-										<!--                  
+										                
                     <foaf:name xml:lang="{$MetadataLanguage}"><xsl:value-of select="$OrganisationName"/></foaf:name>
--->
+
 										<xsl:copy-of select="$OrganisationName-FOAF"/>
-									</foaf:Organization>
-								</xsl:when>
+									</foaf:Organization>-->
+								<!--</xsl:when>
 								<xsl:otherwise>
 									<foaf:Organization>
-										<!--                  
+										                  
                     <foaf:name xml:lang="{$MetadataLanguage}"><xsl:value-of select="$OrganisationName"/></foaf:name>
--->
+
 										<xsl:copy-of select="$OrganisationName-FOAF"/>
 									</foaf:Organization>
 								</xsl:otherwise>
 							</xsl:choose>
 						</org:memberOf>
 					</xsl:if>
-				</xsl:if>
+				</xsl:if>-->
 				<!--				<xsl:if test="$IndividualName = '' and $OrganisationName != ''">
--->
-				<xsl:if test="$OrganisationName != ''">
+
+				<xsl:if test="$OrganisationName != ''">-->
 
 					<!--        
           <foaf:name xml:lang="{$MetadataLanguage}">
             <xsl:value-of select="$OrganisationName"/>
           </foaf:name>
 -->
-					<xsl:copy-of select="$OrganisationName-FOAF"/>
+				<!--	<xsl:copy-of select="$OrganisationName-FOAF"/>
 				</xsl:if>
-				<!--<xsl:copy-of select="$Telephone"/>-->
+				<xsl:copy-of select="$Telephone"/>-->
 				<xsl:copy-of select="$Email"/>
 				<xsl:copy-of select="$URL"/>
 				<xsl:copy-of select="$Address"/>
@@ -1978,17 +1974,17 @@
       </xsl:for-each>
 -->
 			</xsl:variable>
-			<xsl:choose>
+			<!--<xsl:choose>
 				<xsl:when test="$IndividualURI != ''">
 					<rdf:Description rdf:about="{$IndividualURI}">
 						<xsl:copy-of select="$info"/>
 					</rdf:Description>
 				</xsl:when>
-				<xsl:when test="$OrganisationURI != ''">
+				<xsl:when test="$OrganisationURI != ''">-->
 					<rdf:Description rdf:about="{$OrganisationURI}">
 						<xsl:copy-of select="$info"/>
 					</rdf:Description>
-				</xsl:when>
+				<!-- </xsl:when>
 				<xsl:otherwise>
 					<xsl:variable name="orgURL"
 						select="concat($catMDBaseUrl, '/organization/', encode-for-uri($OrganisationName))"/>
@@ -1996,15 +1992,15 @@
 						<xsl:copy-of select="$info"/>
 					</foaf:Agent>
 				</xsl:otherwise>
-			</xsl:choose>
+			</xsl:choose>-->
 		</xsl:param>
 
 		<xsl:param name="ResponsibleParty">
 			<xsl:variable name="info">
-				<xsl:choose>
-					<xsl:when test="$OrganisationName != ''">
-						<rdf:type rdf:resource="{$vcard}Organization"/>
-					</xsl:when>
+			<!--	<xsl:choose>
+					<xsl:when test="$OrganisationName != ''">-->
+						<rdf:type rdf:resource="{$foaf}Organization"/>
+				<!--	</xsl:when>
 					<xsl:when test="$IndividualName != ''">
 						<rdf:type rdf:resource="{$vcard}Individual"/>
 					</xsl:when>
@@ -2012,7 +2008,7 @@
 					<xsl:otherwise>
 						<rdf:type rdf:resource="{$vcard}Kind"/>
 					</xsl:otherwise>
-				</xsl:choose>
+				</xsl:choose>-->
 				<xsl:if test="$IndividualName != ''">
 				<!--        
           <vcard:fn xml:lang="{$MetadataLanguage}">
@@ -2051,13 +2047,13 @@
       </xsl:for-each>
 -->
 			</xsl:variable>
-			<xsl:message>$info=<xsl:value-of select="$info"/></xsl:message>
+		<!--	<xsl:message>$info=<xsl:value-of select="$info"/></xsl:message>
 			<xsl:choose>
-				<xsl:when test="$OrganisationURI != ''">
+				<xsl:when test="$OrganisationURI != ''">-->
 					<rdf:Description rdf:about="{$OrganisationURI}">
 						<xsl:copy-of select="$info"/>
 					</rdf:Description>
-				</xsl:when>
+				<!--</xsl:when>
 				<xsl:when test="$IndividualURI != ''">
 					<rdf:Description rdf:about="{$IndividualURI}">
 						<xsl:copy-of select="$info"/>
@@ -2069,15 +2065,15 @@
 						<xsl:copy-of select="$info"/>
 					</rdf:Description>
 				</xsl:otherwise>
-			</xsl:choose>
+			</xsl:choose>-->
 		</xsl:param>
-		<xsl:message>VCard=<xsl:value-of select="$vcard"/></xsl:message>
+	<!--	<xsl:message>VCard=<xsl:value-of select="$vcard"/></xsl:message>
 		<xsl:message>Adress=<xsl:value-of select="$Address"/></xsl:message>
 		<xsl:message>AdressVCard=<xsl:value-of select="$Address-vCard"/></xsl:message>
 		<xsl:message>OrganisationURI=<xsl:value-of select="$OrganisationURI"/></xsl:message>
 		<xsl:message>OrganisationName-FOAF=<xsl:value-of select="$OrganisationName-FOAF"/></xsl:message>
 		<xsl:message>$OrganisationNameAsIndividualName-vCard=<xsl:value-of select="$OrganisationNameAsIndividualName-vCard"/></xsl:message>
-		
+		-->
 	
 		
 		
@@ -2166,19 +2162,19 @@
 				</dct:creator>
 			</xsl:when>
 		</xsl:choose>
-		<xsl:if test="$profile = $extended">
+		<!-- <xsl:if test="$profile = $extended">
 			<prov:qualifiedAttribution>
 				<prov:Attribution>
 					<prov:agent>
-						<!--          
+						         
             <xsl:copy-of select="$ResponsibleParty"/>
--->
+
 						<xsl:copy-of select="$ROInfo"/>
 					</prov:agent>
 					<dct:type rdf:resource="{$ResponsiblePartyRole}"/>
 				</prov:Attribution>
 			</prov:qualifiedAttribution>
-		</xsl:if>
+		</xsl:if>-->
 	</xsl:template>
 
 	<!-- Metadata point of contact -->
@@ -2439,11 +2435,11 @@
             <xsl:for-each select="gmd:description">
               <rdfs:label xml:lang="{$MetadataLanguage}"><xsl:value-of select="gco:CharacterString"/></rdfs:label>
             </xsl:for-each>
---><foo>
+-->
 		<xsl:apply-templates select="gmd:EX_GeographicDescription/gmd:geographicIdentifier/*">
 			<xsl:with-param name="MetadataLanguage" select="$MetadataLanguage"/>
 		</xsl:apply-templates>
-		<xsl:apply-templates select="gmd:EX_GeographicBoundingBox"/></foo>
+		<xsl:apply-templates select="gmd:EX_GeographicBoundingBox"/>
 		<!--
           </dct:Location>
         </dct:spatial>
@@ -2604,6 +2600,37 @@
 			</xsl:choose>
 		</xsl:param>
 
+		<!-- Bbox as GeoJSON -->
+
+		<xsl:param name="GeoJSONLiteral"
+				>{"type":"Polygon","crs":{"type":"name","properties":{"name":"<xsl:value-of
+				select="$SrsUrn"/>"}},"coordinates":[[[<xsl:value-of select="$west"/>
+			<xsl:text>,</xsl:text>
+			<xsl:value-of select="$north"/>],[<xsl:value-of select="$east"/>
+			<xsl:text>,</xsl:text>
+			<xsl:value-of select="$north"/>],[<xsl:value-of select="$east"/>
+			<xsl:text>,</xsl:text>
+			<xsl:value-of select="$south"/>],[<xsl:value-of select="$west"/>
+			<xsl:text>,</xsl:text>
+			<xsl:value-of select="$south"/>],[<xsl:value-of select="$west"/>
+			<xsl:text>,</xsl:text>
+			<xsl:value-of select="$north"/>]]]}</xsl:param>
+		<!--		<dct:spatial rdf:parseType="Resource">
+			 Recommended geometry encodings 
+			<locn:geometry rdf:datatype="{$gsp}wktLiteral">
+				<xsl:value-of select="$WKTLiteral"/>
+			</locn:geometry>
+			<locn:geometry rdf:datatype="{$gsp}gmlLiteral">
+				<xsl:value-of select="$GMLLiteral"/>
+			</locn:geometry>
+			<!-\- Additional geometry encodings -\->
+			<locn:geometry rdf:datatype="{$geojsonMediaTypeUri}">
+				<xsl:value-of select="$GeoJSONLiteral"/>
+			</locn:geometry>
+			
+      locn:geometry rdf:datatype="{$dct}Box"><xsl:value-of select="$DCTBox"/></locn:geometry>
+
+		</dct:spatial>-->
 	</xsl:template>
 
 	<!-- Temporal extent -->
