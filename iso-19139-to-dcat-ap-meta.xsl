@@ -52,6 +52,7 @@
 	xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmd="http://www.isotc211.org/2005/gmd"
 	xmlns:gml="http://www.opengis.net/gml" xmlns:gmx="http://www.isotc211.org/2005/gmx"
 	xmlns:gsp="http://www.opengis.net/ont/geosparql#"
+	xmlns:dcatap="http://data.europa.eu/r5r/"
 	xmlns:i="http://inspire.ec.europa.eu/schemas/common/1.0"
 	xmlns:i-gp="http://inspire.ec.europa.eu/schemas/geoportal/1.0"
 	xmlns:locn="http://www.w3.org/ns/locn#" xmlns:owl="http://www.w3.org/2002/07/owl#"
@@ -1345,9 +1346,9 @@
 												rdf:resource="{iso19139:processUrl(.)}"/>
 											</xsl:for-each>
 											<!-- Constraints related to access and use -->
-											<!--											<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>-->
+											<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>
 											<!-- Spatial representation type (tentative) -->
-											<!--											<xsl:copy-of select="$SpatialRepresentationType"/>-->
+											<!-- <xsl:copy-of select="$SpatialRepresentationType"/>-->
 											<!-- Encoding -->
 											<xsl:copy-of select="$Encoding"/>
 											<dct:format>text/html</dct:format>
@@ -1369,7 +1370,7 @@
 												rdf:resource="{iso19139:processUrl(.)}"/>
 											</xsl:for-each>
 											<!-- Constraints related to access and use -->
-											<!--											<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>-->
+											<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>
 											<!-- Spatial representation type (tentative) -->
 											<!--											<xsl:copy-of select="$SpatialRepresentationType"/>-->
 											<!-- Encoding -->
@@ -1393,7 +1394,7 @@
 												rdf:resource="{iso19139:processUrl(.)}"/>
 											</xsl:for-each>
 											<!-- Constraints related to access and use -->
-											<!--											<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>-->
+											<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>
 											<!-- Spatial representation type (tentative) -->
 											<!--											<xsl:copy-of select="$SpatialRepresentationType"/>-->
 											<!-- Encoding -->
@@ -1418,7 +1419,7 @@
 												rdf:resource="{iso19139:processUrl(.)}"/>
 											</xsl:for-each>
 											<!-- Constraints related to access and use -->
-											<!--											<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>-->
+											<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>
 											<!-- Spatial representation type (tentative) -->
 											<!--											<xsl:copy-of select="$SpatialRepresentationType"/>-->
 											<!-- Encoding -->
@@ -1442,7 +1443,7 @@
 												rdf:resource="{iso19139:processUrl(.)}"/>
 											</xsl:for-each>
 											<!-- Constraints related to access and use -->
-											<!--											<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>-->
+											<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>
 											<!-- Spatial representation type (tentative) -->
 											<!--											<xsl:copy-of select="$SpatialRepresentationType"/>-->
 											<!-- Encoding -->
@@ -1466,9 +1467,9 @@
 												rdf:resource="{iso19139:processUrl(.)}"/>
 											</xsl:for-each>
 											<!-- Constraints related to access and use -->
-											<!--											<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>-->
+											<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>
 											<!-- Spatial representation type (tentative) -->
-											<!--											<xsl:copy-of select="$SpatialRepresentationType"/>-->
+											<!-- <xsl:copy-of select="$SpatialRepresentationType"/>-->
 											<!-- Encoding -->
 											<xsl:copy-of select="$Encoding"/>
 											<dct:format>application/atom+xml</dct:format>
@@ -1491,7 +1492,7 @@
 												rdf:resource="{iso19139:processUrl(.)}"/>
 											</xsl:for-each>
 											<!-- Constraints related to access and use -->
-											<!--											<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>-->
+											<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>
 											<!-- Spatial representation type (tentative) -->
 											<!--											<xsl:copy-of select="$SpatialRepresentationType"/>-->
 											<!-- Encoding -->
@@ -1512,13 +1513,13 @@
 											<xsl:copy-of select="$TitleAndDescription"/>
 											<!-- Access URL -->
 											<xsl:for-each select="gmd:linkage/gmd:URL">
-												<dcat:accessURL
+											<dcat:accessURL
 												rdf:resource="{iso19139:processUrl(.)}"/>
 											</xsl:for-each>
 											<!-- Constraints related to access and use -->
-											<!--<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>-->
+											<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>
 											<!-- Spatial representation type (tentative) -->
-											<!--						<xsl:copy-of select="$SpatialRepresentationType"/>-->
+											<!-- <xsl:copy-of select="$SpatialRepresentationType"/> -->
 											<!-- Encoding -->
 											<xsl:copy-of select="$Encoding"/>
 											<dct:format>application/gml+xml</dct:format>
@@ -1527,6 +1528,7 @@
 											<xsl:if test="$profile = $extended">
 												<xsl:copy-of select="$ResourceCharacterEncoding"/>
 											</xsl:if>
+											<dcatap:availability rdf:resource="https://docs.dataportal.se/dcat/en/#dcatap%3Aavailability%2Fstable"/>
 										</dcat:Distribution>
 									</dcat:distribution>
 								</xsl:when>
@@ -2720,16 +2722,16 @@
 
 	<!-- Constraints related to access and use -->
 
-	<xsl:template name="ConstraintsRelatedToAccesAndUse"
+	<xsl:template name="ConstraintsRelatedToAccessAndUse"
 		match="gmd:identificationInfo[1]/*/gmd:resourceConstraints/*">
 		<xsl:param name="MetadataLanguage"/>
 		<xsl:param name="LimitationsOnPublicAccess">
 			<xsl:value-of select="gmd:MD_LegalConstraints/gmd:otherConstraints/gco:CharacterString"
 			/>
 		</xsl:param>
-		<xsl:for-each select="gmd:useLimitation">
+	<!--	<xsl:for-each select="gmd:useLimitation">
 			<xsl:choose>
-				<!-- In case the rights/licence URL IS NOT provided -->
+				
 				<xsl:when test="gco:CharacterString">
 					<dct:license>
 						<dct:LicenseDocument>
@@ -2741,40 +2743,131 @@
 							</xsl:call-template>
 						</dct:LicenseDocument>
 					</dct:license>
-					<!--
+					
           <dct:rights>
             <dct:RightsStatement>
               <rdfs:label xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(gco:CharacterString)"/></rdfs:label>
             </dct:RightsStatement>
           </dct:rights>
--->
-				</xsl:when>
-				<!-- In case the rights/licence URL IS provided -->
+
+				</xsl:when>-->
+				<!-- In case the rights/licence URL IS provided
 				<xsl:when test="gmx:Anchor/@xlink:href">
-					<dct:license rdf:resource="{gmx:Anchor/@xlink:href}"/>
+					<dct:license rdf:resource="{gmx:Anchor/@xlink:href}"/> -->
 					<!--
           <dct:license>
             <dct:LicenseDocument rdf:about="{gmx:Anchor/@xlink:href}">
               <rdfs:label xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(gmx:Anchor)"/></rdfs:label>
             </dct:LicenseDocument>
           </dct:license>
--->
+
 				</xsl:when>
 			</xsl:choose>
-		</xsl:for-each>
+		</xsl:for-each>-->
 		<xsl:for-each select="gmd:otherConstraints">
-			<xsl:if test="$profile = $extended">
-				<dct:accessRights>
-					<dct:RightsStatement>
-						<rdfs:label xml:lang="{$MetadataLanguage}">
-							<xsl:value-of select="normalize-space(gco:CharacterString)"/>
-						</rdfs:label>
-						<xsl:call-template name="LocalisedString">
-							<xsl:with-param name="term">rdfs:label</xsl:with-param>
-						</xsl:call-template>
-					</dct:RightsStatement>
-				</dct:accessRights>
-			</xsl:if>
+			
+			
+<!-- expected for license			
+http://creativecommons.org/licenses/by/4.0/
+http://creativecommons.org/licenses/by-nc/4.0/
+http://creativecommons.org/licenses/by-nc-nd/4.0/
+http://creativecommons.org/licenses/by-nc-sa/4.0/
+http://creativecommons.org/licenses/by-nd/4.0/
+http://creativecommons.org/licenses/by-sa/4.0/
+http://creativecommons.org/publicdomain/zero/1.0/			
+		
+swe-profile:
+https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#CC01.0
+https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#CCby4.0
+https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#CCby-sa4.0
+https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#AnnanBegransning
+https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#villkorOkanda
+https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#licensBehovs
+
+Expected for access:
+http://publications.europa.eu/resource/authority/access-right/NON_PUBLIC
+http://publications.europa.eu/resource/authority/access-right/PUBLIC
+http://publications.europa.eu/resource/authority/access-right/RESTRICTED
+			-->
+			
+			<xsl:choose>
+				<xsl:when test="starts-with(gmx:Anchor/@xlink:href,'http')">
+					<xsl:choose>
+						<xsl:when test="gmx:Anchor/@xlink:href='https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#CC01.0'">
+							<dct:license rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/"/>
+						</xsl:when>
+						<xsl:when test="gmx:Anchor/@xlink:href='https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#CCby4.0'">
+							<dct:license rdf:resource="http://creativecommons.org/licenses/by/4.0/"/>
+						</xsl:when>
+						<xsl:when test="gmx:Anchor/@xlink:href='https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#CCby-sa4.0'">
+							<dct:license rdf:resource="https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#CCby-sa4.0"/>
+						</xsl:when>
+						<xsl:when test="gmx:Anchor/@xlink:href='https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#AnnanBegransning'">
+							<dct:license rdf:resource="http://inspire.ec.europa.eu/metadata-codelist/ConditionsApplyingToAccessAndUse/conditionsUnknown"/>
+						</xsl:when>
+						<xsl:when test="gmx:Anchor/@xlink:href='https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#villkorOkanda'">
+							<dct:license rdf:resource="http://inspire.ec.europa.eu/metadata-codelist/ConditionsApplyingToAccessAndUse/conditionsUnknown"/>
+						</xsl:when>
+						<xsl:when test="gmx:Anchor/@xlink:href='https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#licensBehovs'">
+							<dct:accessRights rdf:resource="https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#licensBehovs"/>
+						</xsl:when>
+						<xsl:when test="gmx:Anchor/@xlink:href='http://inspire.ec.europa.eu/metadata-codelist/ConditionsApplyingToAccessAndUse/noConditionsApply'">
+							<dct:accessRights rdf:resource="http://inspire.ec.europa.eu/metadata-codelist/ConditionsApplyingToAccessAndUse/noConditionsApply"/>
+						</xsl:when>
+						<!-- Public access to spatial data sets and services would adversely affect the confidentiality of the proceedings of public authorities, where such confidentiality is provided for by law. -->
+						<xsl:when test="gmx:Anchor/@xlink:href='http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1a'">
+							<dct:accessRights rdf:resource="http://publications.europa.eu/resource/authority/access-right/RESTRICTED"/>
+						</xsl:when>
+						<!-- Public access to spatial data sets and services would adversely affect international relations, public security or national defence.-->
+						<xsl:when test="gmx:Anchor/@xlink:href='http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1b'">
+							<dct:accessRights rdf:resource="http://publications.europa.eu/resource/authority/access-right/RESTRICTED"/>
+						</xsl:when>
+						<!-- Public access to spatial data sets and services would adversely affect the course of justice, the ability of any person to receive a fair trial or the ability of a public authority to conduct an enquiry of a criminal or disciplinary nature. -->
+						<xsl:when test="gmx:Anchor/@xlink:href='http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1c'">
+							<dct:accessRights rdf:resource="http://publications.europa.eu/resource/authority/access-right/RESTRICTED"/>
+						</xsl:when>
+						<!-- Public access to spatial data sets and services would adversely affect the confidentiality of commercial or industrial information, where such confidentiality is provided for by national or Community law to protect a legitimate economic interest, including the public interest in maintaining statistical confidentiality and tax secrecy. -->
+						<xsl:when test="gmx:Anchor/@xlink:href='http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1d'">
+							<dct:accessRights rdf:resource="http://publications.europa.eu/resource/authority/access-right/RESTRICTED"/>
+						</xsl:when>
+						<!-- Public access to spatial data sets and services would adversely affect intellectual property rights. -->
+						<xsl:when test="gmx:Anchor/@xlink:href='http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1e'">
+							<dct:accessRights rdf:resource="http://publications.europa.eu/resource/authority/access-right/RESTRICTED"/>
+						</xsl:when>
+						<!-- Public access to spatial data sets and services would adversely affect the interests or protection of any person who supplied the information requested on a voluntary basis without being under, or capable of being put under, a legal obligation to do so, unless that person has consented to the release of the information concerned. -->
+						<xsl:when test="gmx:Anchor/@xlink:href='http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1e'">
+							<dct:accessRights rdf:resource="http://publications.europa.eu/resource/authority/access-right/RESTRICTED"/>
+						</xsl:when>
+						<!-- Public access to spatial data sets and services would adversely affect the confidentiality of personal data and/or files relating to a natural person where that person has not consented to the disclosure of the information to the public, where such confidentiality is provided for by national or Community law. -->
+						<xsl:when test="gmx:Anchor/@xlink:href='http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1f'">
+							<dct:accessRights rdf:resource="http://publications.europa.eu/resource/authority/access-right/RESTRICTED"/>
+						</xsl:when>
+						<!-- Public access to spatial data sets and services would adversely affect the protection of the environment to which such information relates, such as the location of rare species. -->
+						<xsl:when test="gmx:Anchor/@xlink:href='http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1g'">
+							<dct:accessRights rdf:resource="http://publications.europa.eu/resource/authority/access-right/RESTRICTED"/>
+						</xsl:when>
+						<!-- no limitations-->
+						<xsl:when test="gmx:Anchor/@xlink:href='http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations'">
+							<dct:accessRights rdf:resource="http://publications.europa.eu/resource/authority/access-right/PUBLIC"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<dct:accessRights rdf:resource="{gmx:Anchor/@xlink:href}"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:otherwise>
+					<dct:accessRights>
+						<dct:RightsStatement>
+							<rdfs:label xml:lang="{$MetadataLanguage}">
+								<xsl:value-of select="normalize-space(gmx:Anchor|gco:CharacterString)"/>
+							</rdfs:label>
+							<xsl:call-template name="LocalisedString">
+								<xsl:with-param name="term">rdfs:label</xsl:with-param>
+							</xsl:call-template>
+						</dct:RightsStatement>
+					</dct:accessRights>
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:for-each>
 		<!--
     <xsl:for-each select="gmd:accessConstraints">
@@ -2832,14 +2925,6 @@
 								</xsl:call-template>-->
 							</xsl:if>
 						</xsl:when>
-						<xsl:otherwise>
-							<dcat:keyword xml:lang="{$MetadataLanguage}">
-								<xsl:value-of select="normalize-space(gco:CharacterString)"/>
-							</dcat:keyword>
-							<!--	<xsl:call-template name="LocalisedString">
-								<xsl:with-param name="term">dcat:keyword</xsl:with-param>
-							</xsl:call-template>-->
-						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:when>
 				<xsl:otherwise>
@@ -3191,7 +3276,7 @@
 						<!--  A mapping is missing in Dublin Core -->
 						<!--  A mapping is missing in MDR Freq NAL -->
 						<xsl:value-of
-							select="concat($MaintenanceFrequencyCodelistUri, '/', @codeListValue)"/>
+							select="concat($opfq, 'IRREG')"/>
 					</xsl:when>
 					<xsl:when test="@codeListValue = 'irregular'">
 						<!--  DC Freq voc
@@ -3202,8 +3287,7 @@
 					<xsl:when test="@codeListValue = 'notPlanned'">
 						<!--  A mapping is missing in Dublin Core -->
 						<!--  A mapping is missing in MDR Freq NAL -->
-						<xsl:value-of
-							select="concat($MaintenanceFrequencyCodelistUri, '/', @codeListValue)"/>
+						<xsl:value-of select="concat($opfq, 'IRREG')"/>
 					</xsl:when>
 					<xsl:when test="@codeListValue = 'unknown'">
 						<!--  A mapping is missing in Dublin Core -->
@@ -3216,7 +3300,7 @@
 			</xsl:if>
 		</xsl:param>
 		<xsl:if test="$FrequencyCodeURI != ''">
-			<!--	<dct:accrualPeriodicity rdf:resource="{$FrequencyCodeURI}"/>-->
+			<dct:accrualPeriodicity rdf:resource="{$FrequencyCodeURI}"/>
 		</xsl:if>
 	</xsl:template>
 
