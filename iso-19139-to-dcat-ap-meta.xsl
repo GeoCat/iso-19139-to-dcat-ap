@@ -357,7 +357,7 @@
 			<xsl:call-template name="catalogue"/>
 			<!--   <xsl:apply-templates mode="to-dcat" select="/geonet:root/*"/>-->
 			<!--			<xsl:apply-templates mode="to-dcat" select="/geonet:root/*[name() != 'geonet:gui']"/>-->
-			<xsl:apply-templates mode="to-dcat" select="//gmd:MD_Metadata"/>
+			<xsl:apply-templates mode="to-dcat" select="//gmd:MD_Metadata[gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue='dataset']"/>
 			<!--  <xsl:apply-templates mode="references" select="/geonet:root/*"/>-->
 		</rdf:RDF>
 	</xsl:template>
@@ -437,7 +437,7 @@
         <dcat:dataset rdf:resource="http://localhost:8080/geonetwork/dataset/1"/>
         <dcat:record rdf:resource="http://localhost:8080/geonetwork/metadata/1"/>
       -->
-			<xsl:apply-templates mode="record-reference" select="//gmd:MD_Metadata"/>
+			<xsl:apply-templates mode="record-reference" select="//gmd:MD_Metadata[gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue='dataset']"/>
 		</dcat:Catalog>
 	</xsl:template>
 	<!--  <xsl:template mode="to-dcat" match="gmd:MD_Metadata"/>  -->
@@ -468,7 +468,7 @@
 
  -->
 	<xsl:template match="gmd:MD_Metadata | *[@gco:isoType = 'gmd:MD_Metadata']" mode="to-dcat">
-		<!--<xsl:template match="gmd:MD_Metadata|//gmd:MD_Metadata">
+		<!--<xsl:template match="//gmd:MD_Metadata">
 -->
 		<!--
 
@@ -2815,6 +2815,7 @@
 			</xsl:for-each>
 		</xsl:param>
 		<xsl:for-each select="gmd:keyword">
+			<dcat:keyword><xsl:value-of select="normalize-space(gco:CharacterString|gmx:Anchor)"/></dcat:keyword>
 			<xsl:variable name="lckw"
 				select="translate(gco:CharacterString, $uppercase, $lowercase)"/>
 			<xsl:choose>
