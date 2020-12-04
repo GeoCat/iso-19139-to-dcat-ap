@@ -1528,7 +1528,7 @@
 											<xsl:if test="$profile = $extended">
 												<xsl:copy-of select="$ResourceCharacterEncoding"/>
 											</xsl:if>
-											<dcatap:availability rdf:resource="https://docs.dataportal.se/dcat/en/#dcatap%3Aavailability%2Fstable"/>
+											<dcatap:availability rdf:resource="http://data.europa.eu/r5r/availability/stable"/>
 										</dcat:Distribution>
 									</dcat:distribution>
 								</xsl:when>
