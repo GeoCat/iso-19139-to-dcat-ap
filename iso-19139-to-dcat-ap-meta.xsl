@@ -1912,8 +1912,8 @@
 					<xsl:when test="$IndividualName != ''">
 						<rdf:type rdf:resource="{$foaf}Person"/>
 					</xsl:when>
-					<xsl:when test="$OrganisationName != ''">-->
-						<rdf:type rdf:resource="{$foaf}Organization"/>
+					<xsl:when test="$OrganisationName != ''">
+						<rdf:type rdf:resource="{$foaf}Organization"/>-->
 					<!--</xsl:when>
 					<xsl:otherwise>
 						<rdf:type rdf:resource="{$foaf}Agent"/>
@@ -1949,17 +1949,17 @@
 						</org:memberOf>
 					</xsl:if>
 				</xsl:if>-->
-				<!--				<xsl:if test="$IndividualName = '' and $OrganisationName != ''">
+				<!--				<xsl:if test="$IndividualName = '' and $OrganisationName != ''">-->
 
-				<xsl:if test="$OrganisationName != ''">-->
-
-					<!--        
-          <foaf:name xml:lang="{$MetadataLanguage}">
-            <xsl:value-of select="$OrganisationName"/>
-          </foaf:name>
--->
-				<!--	<xsl:copy-of select="$OrganisationName-FOAF"/>
+				<xsl:if test="$OrganisationName != ''">
+				  <rdfs:label xml:lang="{$MetadataLanguage}"><xsl:value-of select="$OrganisationName"/></rdfs:label> 
+		          <foaf:name xml:lang="{$MetadataLanguage}">
+		            <xsl:value-of select="$OrganisationName"/>
+		          </foaf:name>
 				</xsl:if>
+				
+				<!--	<xsl:copy-of select="$OrganisationName-FOAF"/>
+				
 				<xsl:copy-of select="$Telephone"/>-->
 				<xsl:copy-of select="$Email"/>
 				<xsl:copy-of select="$URL"/>
@@ -1983,9 +1983,9 @@
 					</rdf:Description>
 				</xsl:when>
 				<xsl:when test="$OrganisationURI != ''">-->
-					<rdf:Description rdf:about="{$OrganisationURI}">
+					<foaf:organization rdf:about="{$OrganisationURI}">
 						<xsl:copy-of select="$info"/>
-					</rdf:Description>
+					</foaf:organization>
 				<!-- </xsl:when>
 				<xsl:otherwise>
 					<xsl:variable name="orgURL"
