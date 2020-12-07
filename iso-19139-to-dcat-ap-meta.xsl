@@ -394,7 +394,7 @@
 				<xsl:value-of select="$catGNBaseUrl"/>/srv/eng/rdf.search?any= </void:uriLookupEndpoint>
 			<!-- The entity responsible for making the catalog online. -->
 			<dct:publisher>
-				<foaf:Organization
+				<foaf:agent
 					rdf:about="https://resources.geodata.se/codelist/organisationer/lantmateriet">
 					<foaf:name>
 						<xsl:value-of select="$CatOrgName"/>
@@ -403,8 +403,7 @@
 					<foaf:mbox rdf:resource="mailto:geodatasupport@geodata.se"/> -->
 					<dct:type rdf:resource="http://purl.org/adms/publishertype/LocalAuthority"/>
 					<foaf:mbox rdf:resource="mailto:{$CatOrgEmail}"/>
-
-				</foaf:Organization>
+				</foaf:agent>
 			</dct:publisher>
 			<!-- The knowledge organization system (KOS) used to classify catalog's datasets.
       -->
@@ -1985,9 +1984,9 @@
 					</rdf:Description>
 				</xsl:when>
 				<xsl:when test="$OrganisationURI != ''">-->
-					<foaf:organization rdf:about="{$OrganisationURI}">
+					<foaf:agent rdf:about="{$OrganisationURI}/agent">
 						<xsl:copy-of select="$info"/>
-					</foaf:organization>
+					</foaf:agent>
 				<!-- </xsl:when>
 				<xsl:otherwise>
 					<xsl:variable name="orgURL"
@@ -2157,7 +2156,7 @@
 			<xsl:when test="$role = 'owner'">
 				<!-- MICO 2020-03-07 ändrat till owner -->
 				<dct:publisher>
-					<xsl:copy-of select="$ResponsibleParty"/>
+					<xsl:copy-of select="$ROInfo"/>
 				</dct:publisher>
 			</xsl:when>
 			<xsl:when test="$role = 'author' and $profile = $extended">
