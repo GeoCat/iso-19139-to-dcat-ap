@@ -1828,10 +1828,8 @@
 					select="normalize-space(gmd:administrativeArea/*)"/>
 				<xsl:variable name="postalCode" select="normalize-space(gmd:postalCode/*)"/>
 				<xsl:variable name="country" select="normalize-space(gmd:country/*)"/>
-				<!--				<xsl:if test="$deliveryPoint != '' or $city != '' or $administrativeArea != '' or $postalCode != '' or $country != ''">
--->
-				<xsl:if test="$deliveryPoint = 'xyz'">
-
+				<xsl:if test="$deliveryPoint != '' or $city != '' or $administrativeArea != '' or $postalCode != '' or $country != ''">
+				<!--<xsl:if test="$deliveryPoint = 'xyz'">-->
 					<locn:address>
 						<locn:Address>
 							<xsl:if test="$deliveryPoint != ''">
@@ -1958,23 +1956,27 @@
 		          </foaf:name>
 				</xsl:if>
 				
-				<!--	<xsl:copy-of select="$OrganisationName-FOAF"/>
+				<!--	<xsl:copy-of select="$OrganisationName-FOAF"/>-->
 				
-				<xsl:copy-of select="$Telephone"/>-->
+				<xsl:copy-of select="$Telephone"/>
 				<xsl:copy-of select="$Email"/>
 				<xsl:copy-of select="$URL"/>
 				<xsl:copy-of select="$Address"/>
-				<!--        
+				<!--       --> 
       <xsl:for-each select="gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString">
         <foaf:mbox rdf:resource="mailto:{.}"/>
       </xsl:for-each>
       <xsl:for-each select="gmd:contactInfo/gmd:CI_Contact/gmd:onlineResource/gmd:CI_OnlineResource/gmd:linkage/gmd:URL">
--->
+
 				<!-- ?? Should another property be used instead? E.g., foaf:homepage? -->
-				<!--
-        <foaf:workplaceHomepage rdf:resource="{.}"/>
+				<!---->
+      	<xsl:variable name="curl">
+      		<xsl:if test="not(starts-with(.,'http'))">https://</xsl:if><xsl:value-of select="."/>
+      	</xsl:variable>
+ 
+        <foaf:workplaceHomepage rdf:resource="{$curl}"/>
       </xsl:for-each>
--->
+
 			</xsl:variable>
 			<!--<xsl:choose>
 				<xsl:when test="$IndividualURI != ''">
@@ -2000,8 +2002,8 @@
 		<xsl:param name="ResponsibleParty">
 			<xsl:variable name="info">
 			<!--	<xsl:choose>
-					<xsl:when test="$OrganisationName != ''">-->
-						<rdf:type rdf:resource="{$foaf}Organization"/>
+					<xsl:when test="$OrganisationName != ''">
+						<rdf:type rdf:resource="{$foaf}Organization"/>-->
 				<!--	</xsl:when>
 					<xsl:when test="$IndividualName != ''">
 						<rdf:type rdf:resource="{$vcard}Individual"/>
@@ -2052,9 +2054,9 @@
 		<!--	<xsl:message>$info=<xsl:value-of select="$info"/></xsl:message>
 			<xsl:choose>
 				<xsl:when test="$OrganisationURI != ''">-->
-					<rdf:Description rdf:about="{$OrganisationURI}">
+					<vcard:Organization rdf:about="{$OrganisationURI}">
 						<xsl:copy-of select="$info"/>
-					</rdf:Description>
+					</vcard:Organization>
 				<!--</xsl:when>
 				<xsl:when test="$IndividualURI != ''">
 					<rdf:Description rdf:about="{$IndividualURI}">
@@ -2096,7 +2098,7 @@
 -->
 			<xsl:when test="$role = 'owner' and $profile = $extended">
 				<dct:rightsHolder>
-					<xsl:copy-of select="$ROInfo"/>
+					<xsl:copy-of select="$ResponsibleParty"/>
 				</dct:rightsHolder>
 			</xsl:when>
 			<!--
@@ -2144,7 +2146,7 @@
             <prov:hadActivity>
               <prov:Activity>
                 <prov:wasAssociatedWith>
-                  <xsl:copy-of select="$ROInfo"/>
+                  <xsl:copy-of select="$ResponsibleParty"/>
                 </prov:wasAssociatedWith>
               </prov:Activity>
             </prov:hadActivity>
@@ -2155,12 +2157,12 @@
 			<xsl:when test="$role = 'owner'">
 				<!-- MICO 2020-03-07 ändrat till owner -->
 				<dct:publisher>
-					<xsl:copy-of select="$ROInfo"/>
+					<xsl:copy-of select="$ResponsibleParty"/>
 				</dct:publisher>
 			</xsl:when>
 			<xsl:when test="$role = 'author' and $profile = $extended">
 				<dct:creator>
-					<xsl:copy-of select="$ROInfo"/>
+					<xsl:copy-of select="$ResponsibleParty"/>
 				</dct:creator>
 			</xsl:when>
 		</xsl:choose>
