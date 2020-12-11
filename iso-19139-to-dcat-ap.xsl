@@ -366,8 +366,8 @@
       <xsl:variable name="ct" select="//gmd:CI_ResponsibleParty[gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString=$em][1]"/>
       <xsl:value-of select="$ct/gmd:organisationName/*" />:
       <xsl:value-of select="$ct/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/*" />=
-      <xsl:value-of select="$em" />
-    </xsl:for-each>-->
+      <xsl:value-of select="$em" />-->
+    </xsl:for-each>
       <xsl:call-template name="catalogue"/>
       <xsl:apply-templates select="//gmd:MD_Metadata[gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue='dataset']"/>
     </rdf:RDF>
@@ -1333,6 +1333,11 @@
                 <xsl:copy-of select="$Title"/>
                 <xsl:copy-of select="$Description"/>
               </xsl:variable>
+              <xsl:variable name="orgURI">
+                  <xsl:call-template name="processUrl">
+                    <xsl:with-param name="url" select="concat($catCLBaseUrl,'/organisation/',//gmd:organisationName[1]/gco:CharacterString,'/',tokenize(//gmd:contactInfo[1]/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/*[normalize-space() != ''],'@')[1])"/>
+                  </xsl:call-template>
+              </xsl:variable>
 		          <xsl:choose>
 								<xsl:when test="$protocol = 'HTTP:Information'">
 									<dcat:distribution>
@@ -1361,6 +1366,7 @@
 											<xsl:if test="$profile = $extended">
 												<xsl:copy-of select="$ResourceCharacterEncoding"/>
 											</xsl:if>
+										  <dc:publisher rdf:resource="{$orgURI}"/>
 										</dcat:Distribution>
 									</dcat:distribution>
 								</xsl:when>
@@ -1390,6 +1396,7 @@
 											<xsl:if test="$profile = $extended">
 												<xsl:copy-of select="$ResourceCharacterEncoding"/>
 											</xsl:if>
+										  <dc:publisher rdf:resource="{$orgURI}"/>
 										</dcat:Distribution>
 									</dcat:distribution>
 								</xsl:when>
@@ -1419,6 +1426,7 @@
 											<xsl:if test="$profile = $extended">
 												<xsl:copy-of select="$ResourceCharacterEncoding"/>
 											</xsl:if>
+										  <dc:publisher rdf:resource="{$orgURI}"/>
 										</dcat:Distribution>
 									</dcat:distribution>
 								</xsl:when>
@@ -1449,6 +1457,7 @@
 											<xsl:if test="$profile = $extended">
 												<xsl:copy-of select="$ResourceCharacterEncoding"/>
 											</xsl:if>
+										  <dc:publisher rdf:resource="{$orgURI}"/>
 										</dcat:Distribution>
 									</dcat:distribution>
 								</xsl:when>
@@ -1478,6 +1487,7 @@
 											<xsl:if test="$profile = $extended">
 												<xsl:copy-of select="$ResourceCharacterEncoding"/>
 											</xsl:if>
+										  <dc:publisher rdf:resource="{$orgURI}"/>
 										</dcat:Distribution>
 									</dcat:distribution>
 								</xsl:when>
@@ -1507,6 +1517,7 @@
 											<xsl:if test="$profile = $extended">
 												<xsl:copy-of select="$ResourceCharacterEncoding"/>
 											</xsl:if>
+										  <dc:publisher rdf:resource="{$orgURI}"/>
 										</dcat:Distribution>
 									</dcat:distribution>
 								</xsl:when>
@@ -1538,6 +1549,7 @@
 											<xsl:if test="$profile = $extended">
 												<xsl:copy-of select="$ResourceCharacterEncoding"/>
 											</xsl:if>
+										  <dc:publisher rdf:resource="{$orgURI}"/>
 										</dcat:Distribution>
 									</dcat:distribution>
 								</xsl:when>
@@ -1568,6 +1580,7 @@
 											<xsl:if test="$profile = $extended">
 												<xsl:copy-of select="$ResourceCharacterEncoding"/>
 											</xsl:if>
+										  <dc:publisher rdf:resource="{$orgURI}"/>
 										</dcat:Distribution>
 									</dcat:distribution>
 								</xsl:when>
@@ -1600,6 +1613,19 @@
           <xsl:with-param name="ResourceType" select="$ResourceType"/>
         </xsl:apply-templates>
       </xsl:for-each>
+      
+      <xsl:variable name="orgURI">
+        <xsl:call-template name="processUrl">
+          <xsl:with-param name="url" select="concat($catCLBaseUrl,'/organisation/',//gmd:organisationName[1]/gco:CharacterString,'/',tokenize(//gmd:contactInfo[1]/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/*[normalize-space() != ''],'@')[1])"/>
+        </xsl:call-template>
+      </xsl:variable>
+      
+      <!-- if no publisher, add first contact as publisher -->
+      <xsl:if test="not(gmd:identificationInfo/*/gmd:pointOfContact[gmd:CI_ResponsibleParty/gmd:role/gmd:CI_RoleCode/@codeListValue='publisher'])">
+        <dc:publisher rdf:resource="{$orgURI}"/>
+      </xsl:if>
+      
+      
 <!--      
       <xsl:apply-templates select="gmd:identificationInfo/*/gmd:pointOfContact/gmd:CI_ResponsibleParty">
         <xsl:with-param name="MetadataLanguage" select="$MetadataLanguage"/>
@@ -1747,7 +1773,7 @@
     </xsl:param>
     <xsl:param name="OrganisationURI">
       <xsl:call-template name="processUrl">
-        <xsl:with-param name="url" select="concat($catCLBaseUrl,'/organisation/',gmd:organisationName/gco:CharacterString,'/',$role)"/>
+        <xsl:with-param name="url" select="concat($catCLBaseUrl,'/organisation/',gmd:organisationName/gco:CharacterString,'/',tokenize(gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/*[normalize-space() != ''],'@')[1])"/>
       </xsl:call-template>
     </xsl:param>
     <xsl:param name="URI">
@@ -1826,12 +1852,20 @@
     </xsl:param>
     <xsl:param name="Telephone">
       <xsl:for-each select="gmd:contactInfo/gmd:CI_Contact/gmd:phone/gmd:CI_Telephone/gmd:voice/*[normalize-space() != '']">
-        <foaf:phone rdf:resource="tel:+{translate(translate(translate(translate(translate(normalize-space(.),' ',''),'(',''),')',''),'+',''),'.','')}"/>
+        <foaf:phone rdf:parseType="Resource">
+          <vcard:hasValue rdf:resource="tel:+{translate(translate(translate(translate(translate(normalize-space(.),' ',''),'(',''),')',''),'+',''),'.','')}"/>
+          <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Work"/>
+          <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Voice"/>
+        </foaf:phone> 
       </xsl:for-each>
     </xsl:param>
     <xsl:param name="Telephone-vCard">
       <xsl:for-each select="gmd:contactInfo/gmd:CI_Contact/gmd:phone/gmd:CI_Telephone/gmd:voice/*[normalize-space() != '']">
-        <vcard:hasTelephone rdf:resource="tel:+{translate(translate(translate(translate(translate(normalize-space(.),' ',''),'(',''),')',''),'+',''),'.','')}"/>
+        <vcard:hasTelephone rdf:parseType="Resource">
+          <vcard:hasValue rdf:resource="tel:+{translate(translate(translate(translate(translate(normalize-space(.),' ',''),'(',''),')',''),'+',''),'.','')}"/>
+          <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Work"/>
+          <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Voice"/>
+        </vcard:hasTelephone>
       </xsl:for-each>
     </xsl:param>
     <xsl:param name="Address">
@@ -1896,24 +1930,24 @@
     </xsl:param>
     <xsl:param name="ROInfo">
       <xsl:variable name="info">
-        <xsl:choose>
-          <xsl:when test="$IndividualName != ''">
-            <rdf:type rdf:resource="{$foaf}Person"/>
-          </xsl:when>
+       <!-- <xsl:choose> 
+          <xsl:when test="$IndividualName != ''">-->
+           <rdf:type rdf:resource="{$foaf}Person"/>
+        <!--  </xsl:when>
           <xsl:when test="$OrganisationName != ''">
             <rdf:type rdf:resource="{$foaf}Organization"/>
           </xsl:when>
           <xsl:otherwise>
             <rdf:type rdf:resource="{$foaf}Agent"/>
           </xsl:otherwise>
-        </xsl:choose>
+        </xsl:choose>-->
         <xsl:if test="$IndividualName != ''">         
           <xsl:copy-of select="$IndividualName-FOAF"/>
           <xsl:if test="$OrganisationName != ''">
             <org:memberOf>
               <xsl:choose>
                 <xsl:when test="$OrganisationURI != ''">
-                  <foaf:Organization rdf:about="{$OrganisationURI}">                  
+                  <foaf:Organization>                  
                     <xsl:copy-of select="$OrganisationName-FOAF"/>
                   </foaf:Organization>
                 </xsl:when>
@@ -1936,21 +1970,22 @@
       </xsl:variable>
       <xsl:choose>
         <xsl:when test="$IndividualURI != ''">
-          <rdf:Description rdf:resource="{$IndividualURI}">
+          <rdf:Description rdf:about="{$IndividualURI}">
             <xsl:copy-of select="$info"/>
           </rdf:Description>
         </xsl:when>
         <xsl:when test="$OrganisationURI != ''">
-          <rdf:Description rdf:resource="{$OrganisationURI}">
+          <rdf:Description rdf:about="{$OrganisationURI}">
             <xsl:copy-of select="$info"/>
           </rdf:Description>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:variable name="orgURL"
-						select="concat($catMDBaseUrl, '/organization/', encode-for-uri($OrganisationName))"/>
+         <!-- <xsl:variable name="orgURL"
+						select="concat($catMDBaseUrl, '/organization/', encode-for-uri(concat($OrganisationName))"/>
 					<foaf:Agent rdf:about="{$orgURL}">
 						<xsl:copy-of select="$info"/>
-					</foaf:Agent>
+					</foaf:Agent>-->
+          <xsl:message>there should be a orgURI here!</xsl:message>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:param>
@@ -2006,12 +2041,12 @@
       </xsl:variable>
       <xsl:choose>
         <xsl:when test="$IndividualURI != ''">
-          <rdf:Description rdf:resource="{$IndividualURI}">
+          <rdf:Description rdf:about="{$IndividualURI}">
             <xsl:copy-of select="$info"/>
           </rdf:Description>
         </xsl:when>
         <xsl:when test="$OrganisationURI != ''">
-          <rdf:Description rdf:resource="{$OrganisationURI}">
+          <rdf:Description rdf:about="{$OrganisationURI}">
             <xsl:copy-of select="$info"/>
           </rdf:Description>
         </xsl:when>
@@ -2051,14 +2086,14 @@
 <!-- Mapping moved to core profile for compliance with DCAT-AP 2 -->
 <!--
     <xsl:if test="$profile = $extended">
--->
+
       <prov:qualifiedAttribution>
         <prov:Attribution>
           <prov:agent>         
             <xsl:copy-of select="$ROInfo"/>
           </prov:agent> 
         </prov:Attribution>     
-      </prov:qualifiedAttribution>
+      </prov:qualifiedAttribution>-->
             
   </xsl:template>
 
@@ -2158,7 +2193,7 @@
               </xsl:choose>
               <xsl:if test="$href != '' and $href != '' and (starts-with($href, 'http://') or starts-with($href, 'https://'))">
                 <foaf:isPrimaryTopicOf>
-                  <dcat:CatalogRecord rdf:about="{$href}"/>
+                  <dcat:CatalogRecord rdf:resource="{$href}"/>
                 </foaf:isPrimaryTopicOf>
               </xsl:if>
 	    </dcat:servesDataset>
