@@ -103,6 +103,9 @@
   <xsl:variable name="profile-core-uri">http://data.europa.eu/r5r/</xsl:variable>
   <xsl:variable name="profile-extended-uri">http://data.europa.eu/930/</xsl:variable>
 
+  <xsl:include href="stockholm.xsl"/>
+  <xsl:include href="metagis.xsl"/>
+
 <!--
 
   Mapping parameters
@@ -315,6 +318,7 @@
 
   <xsl:template match="/">
     <rdf:RDF>
+      <xsl:call-template name="catalogue"/>
       <xsl:apply-templates select="gmd:MD_Metadata|//gmd:MD_Metadata"/>
     </rdf:RDF>
   </xsl:template>
@@ -341,17 +345,31 @@
 -->
 
   <xsl:param name="ResourceUri">
-    <xsl:variable name="rURI" select="gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:identifier/*/gmd:code/gco:CharacterString"/>
-    <xsl:if test="$rURI != '' and ( starts-with($rURI, 'http://') or starts-with($rURI, 'https://') )">
-      <xsl:value-of select="$rURI"/>
-    </xsl:if>
+    <xsl:variable name="rURI" select="gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:identifier/*/gmd:code/gco:CharacterString|gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:identifier/*/gmd:code/gmx:Anchor/@xlink:href"/>
+    <xsl:variable name="mURI" select="gmd:fileIdentifier/gco:CharacterString"/>
+    <xsl:choose>
+      <xsl:when test="$rURI[1] != '' and ( starts-with($rURI[1], 'http') )">
+        <xsl:value-of select="$rURI[1]"/>
+      </xsl:when>
+      <xsl:when test="$rURI[1] != ''">
+        <xsl:value-of select="concat($catDataBaseUrl,'/',$rURI[1])"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="concat($catDataBaseUrl,'/',$mURI[1])"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:param>
 
   <xsl:param name="MetadataUri">
     <xsl:variable name="mURI" select="gmd:fileIdentifier/gco:CharacterString"/>
-    <xsl:if test="$mURI != '' and ( starts-with($mURI, 'http://') or starts-with($mURI, 'https://') )">
-      <xsl:value-of select="$mURI"/>
-    </xsl:if>
+    <xsl:choose>
+      <xsl:when test="$mURI != '' and ( starts-with($mURI, 'http') )">
+        <xsl:value-of select="$mURI"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="concat($catMDBaseUrl,'/',$mURI[1])"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:param>
 
 <!--
@@ -1298,11 +1316,11 @@
 -->      
     </xsl:param>
 
-    <xsl:choose>
+  <!--  <xsl:choose>
       <xsl:when test="$ResourceUri != ''">
-<!--
+
         <xsl:if test="$profile = $extended">
--->
+
           <xsl:choose>
             <xsl:when test="$MetadataUri != ''">
               <rdf:Description rdf:about="{$MetadataUri}">
@@ -1320,14 +1338,14 @@
                 </rdf:Description>
               </xsl:if>
             </xsl:otherwise>
-          </xsl:choose>
+          </xsl:choose>-->
 <!--
         </xsl:if>
 -->
-        <rdf:Description rdf:about="{$ResourceUri}">
+        <dcat:dataset rdf:about="{$ResourceUri}">
           <xsl:copy-of select="$ResourceDescription"/>
-        </rdf:Description>
-      </xsl:when>
+        </dcat:dataset>
+   <!--   </xsl:when>
       <xsl:otherwise>
         <rdf:Description>
           <xsl:if test="normalize-space($MetadataDescription)">
@@ -1341,7 +1359,7 @@
           <xsl:copy-of select="$ResourceDescription"/>
         </rdf:Description>
       </xsl:otherwise>
-    </xsl:choose>
+    </xsl:choose>-->
 
  <!-- Mapping added to core profile for compliance with DCAT-AP 2 -->
 <!--
