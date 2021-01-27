@@ -320,7 +320,7 @@
   <xsl:template match="/">
     <rdf:RDF>
       <xsl:call-template name="catalogue"/>
-      <xsl:apply-templates select="gmd:MD_Metadata|//gmd:MD_Metadata"/>
+      <xsl:apply-templates select="gmd:MD_Metadata[gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue='dataset']|//gmd:MD_Metadata[gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue='dataset']"/>
     </rdf:RDF>
   </xsl:template>
 
@@ -628,7 +628,7 @@
     </xsl:param>
 -->
     <xsl:param name="Lineage">
-      <xsl:for-each select="gmd:dataQualityInfo/*/gmd:lineage/*/gmd:statement">
+      <!--<xsl:for-each select="gmd:dataQualityInfo/*/gmd:lineage/*/gmd:statement">
         <dct:provenance>
           <dct:ProvenanceStatement rdf:about="{concat($catMDBaseUrl,'/',//gmd:fileIdentifier/*,'#provenance')}">
             <dct:description xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(gco:CharacterString)"/></dct:description>
@@ -637,7 +637,7 @@
             </xsl:call-template>
           </dct:ProvenanceStatement>
         </dct:provenance>
-      </xsl:for-each>
+      </xsl:for-each>-->
     </xsl:param>
     
     <xsl:param name="MetadataDate">
@@ -1243,18 +1243,21 @@
 		      <xsl:choose>
                         <xsl:when test="$points-to-service = 'yes'">
                           <dcat:accessService rdf:parseType="Resource">
+                            <dcat:DataService rdf:about="$url">
                             <xsl:call-template name="service-endpoint">
                               <xsl:with-param name="function" select="$function"/>
                               <xsl:with-param name="protocol" select="$protocol"/>
                               <xsl:with-param name="url" select="$url"/>
                             </xsl:call-template>
-		            <xsl:if test="$profile = $extended">
+                          
+		            <!--<xsl:if test="$profile = $extended">
                               <xsl:call-template name="service-protocol">
                                 <xsl:with-param name="function" select="$function"/>
                                 <xsl:with-param name="protocol" select="$protocol"/>
                                 <xsl:with-param name="url" select="$url"/>
                               </xsl:call-template>
-		            </xsl:if>
+		            </xsl:if>-->
+                            </dcat:DataService>
                           </dcat:accessService>
 			</xsl:when>
 			<xsl:otherwise>
@@ -2049,8 +2052,10 @@
         <xsl:value-of select="gmd:title/gco:CharacterString"/>
       </dct:title>
 -->        
-      <xsl:copy-of select="$specTitle"/>
-      <xsl:apply-templates select="gmd:date/gmd:CI_Date"/>
+     
+       <xsl:copy-of select="$specTitle"/>
+    <!--   <xsl:apply-templates select="gmd:date/gmd:CI_Date"/> -->
+      
     </xsl:variable>
 <!--
     <xsl:variable name="specinfo">
@@ -2104,8 +2109,10 @@
 -->
         </xsl:when>
         <xsl:otherwise>
-          <dct:conformsTo rdf:parseType="Resource">
-            <xsl:copy-of select="$specinfo"/>
+          <dct:conformsTo>
+            <dct:Standard rdf:about="{concat($catMDBaseUrl,'/',//gmd:fileIdentifier/*,'#specification')}">
+              <xsl:copy-of select="$specinfo"/>
+            </dct:Standard>
           </dct:conformsTo>
         </xsl:otherwise>
       </xsl:choose>
@@ -2480,9 +2487,9 @@
                  for being revised (e.g., mapped to a usage note) or dropped.
 -->
 
-    <xsl:for-each select="gmd:useLimitation">
+ <!--   <xsl:for-each select="gmd:useLimitation">
       <xsl:choose>
-<!-- In case the rights/licence URL IS NOT provided -->
+ In case the rights/licence URL IS NOT provided 
         <xsl:when test="normalize-space(gco:CharacterString) != ''">
           <dct:license>
             <dct:LicenseDocument>
@@ -2491,14 +2498,14 @@
                 <xsl:with-param name="term">rdfs:label</xsl:with-param>
               </xsl:call-template>
             </dct:LicenseDocument>
-          </dct:license>
+          </dct:license>-->
 <!--
           <dct:rights>
             <dct:RightsStatement>
               <rdfs:label xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(gco:CharacterString)"/></rdfs:label>
             </dct:RightsStatement>
           </dct:rights>
--->
+
         </xsl:when>
 	<xsl:when test="gmd:MD_RestrictionCode">
 	  <xsl:variable name="use-limitation-code" select="normalize-space(@codeListValue)"/>
@@ -2522,33 +2529,33 @@
                 <xsl:with-param name="term">rdfs:label</xsl:with-param>
               </xsl:call-template>
             </dct:LicenseDocument>
-          </dct:license>
+          </dct:license>-->
 <!--
           <dct:rights>
             <dct:RightsStatement>
               <rdfs:label xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(gco:CharacterString)"/></rdfs:label>
             </dct:RightsStatement>
           </dct:rights>
--->
-        </xsl:when>
+
+        </xsl:when>-->
 <!-- In case the rights/licence URL IS provided -->
-        <xsl:when test="gmx:Anchor/@xlink:href">
+ <!--       <xsl:when test="gmx:Anchor/@xlink:href">
           <dct:license rdf:resource="{gmx:Anchor/@xlink:href}"/>
-<!--
+
           <dct:license>
             <dct:LicenseDocument rdf:about="{gmx:Anchor/@xlink:href}">
               <rdfs:label xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(gmx:Anchor)"/></rdfs:label>
             </dct:LicenseDocument>
           </dct:license>
--->
+
         </xsl:when>
       </xsl:choose>
-    </xsl:for-each>
+    </xsl:for-each>-->
 
 <!-- Mapping added for compliance with the 2017 edition of the INSPIRE Metadata Technical Guidelines -->    
     <xsl:for-each select="gmd:otherConstraints[../gmd:useConstraints]">
       <xsl:choose>
-<!-- In case the rights/licence URL IS NOT provided -->
+<!-- In case the rights/licence URL IS NOT provided 
         <xsl:when test="normalize-space(gco:CharacterString) != ''">
           <dct:license>
             <dct:LicenseDocument>
@@ -2582,7 +2589,7 @@
               </xsl:call-template>
             </dct:LicenseDocument>
           </dct:license>
-        </xsl:when>
+        </xsl:when>-->
 <!-- In case the rights/licence URL IS provided -->
         <xsl:when test="gmx:Anchor/@xlink:href">
           <dct:license rdf:resource="{gmx:Anchor/@xlink:href}"/>
@@ -2880,7 +2887,7 @@
 
 <!-- Encoding -->
 
-  <xsl:template name="Encoding" match="gmd:distributionFormat/gmd:MD_Format/gmd:name/*">
+  <xsl:template name="Encoding" match="gmd:distributionFormat[1]/gmd:MD_Format/gmd:name/*">
     <xsl:choose>
       <xsl:when test="@xlink:href and @xlink:href != ''">
         <dct:format rdf:resource="{@xlink:href}"/>
@@ -2894,7 +2901,7 @@
       </xsl:when>
       <xsl:otherwise>
         <dct:format rdf:parseType="Resource">
-          <rdfs:label><xsl:value-of select="."/></rdfs:label>
+          <rdfs:label><xsl:value-of select="iso19139:mapFormat(.)"/></rdfs:label>
         </dct:format>
       </xsl:otherwise>
     </xsl:choose>
@@ -2958,7 +2965,7 @@
           <xsl:when test="@codeListValue = 'asNeeded'">
 <!--  A mapping is missing in Dublin Core -->
 <!--  A mapping is missing in MDR Freq NAL -->
-            <xsl:value-of select="concat($opfq,@codeListValue)"/>
+            <xsl:value-of select="concat($opfq,'IRREG')"/>
           </xsl:when>
           <xsl:when test="@codeListValue = 'irregular'">
 <!--  DC Freq voc
@@ -3002,7 +3009,8 @@
       </xsl:if>
     </xsl:param>
 
-    <xsl:choose>
+   <!-- 
+     <xsl:choose>
       <xsl:when test="starts-with($link, 'http://') or starts-with($link, 'https://')">
         <dct:conformsTo>
           <rdf:Description rdf:about="{$link}">
@@ -3138,6 +3146,7 @@
         </xsl:choose>
       </xsl:otherwise>
     </xsl:choose>
+   -->
   </xsl:template>
 
 <!-- Spatial representation type (tentative) -->
@@ -3389,7 +3398,7 @@
           <xsl:value-of select="$url"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="$url"/>
+          <xsl:value-of select="concat($url,'?request=getcapabilities')"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:param>

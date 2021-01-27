@@ -114,7 +114,7 @@
 		</dcat:Catalog>
 	</xsl:template>
 
-	<xsl:template mode="record-reference" match="gmd:MD_Metadata" priority="2">
+	<xsl:template mode="record-reference" match="gmd:MD_Metadata[gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue='dataset']" priority="2">
 		
 		<xsl:param name="MetadataUri">
 			<xsl:variable name="mURI" select="gmd:fileIdentifier/gco:CharacterString"/>
@@ -410,5 +410,20 @@
 				<xsl:when test="$TopicCategory = 'inlandWaters' or $TopicCategory = 'transport'">http://publications.europa.eu/resource/authority/data-theme/TRAN</xsl:when>
 				<xsl:otherwise>http://publications.europa.eu/resource/authority/data-theme/ENVI</xsl:otherwise>
 			</xsl:choose>
+	</xsl:function>
+	
+	<xsl:function name="iso19139:mapFormat" as="xs:string">
+		<xsl:param name="format" as="xs:string"/>
+		<xsl:choose>
+			<xsl:when test="$format = 'ESRI Shape'">application/x-shapefile</xsl:when>
+			<xsl:when test="$format = 'GML'">application/gml+xml</xsl:when>
+			<xsl:when test="$format = 'KML'">vnd.google-earth.kml+xml</xsl:when>
+			<xsl:when test="$format = 'TIFF'">image/tiff</xsl:when>
+			<xsl:when test="$format = 'GPKG'">application/vnd.sqlite3</xsl:when>
+			<xsl:when test="$format = 'FGDB'">application/x-filegdb</xsl:when>
+			<xsl:when test="$format = 'GEOJSON'">application/geo+json</xsl:when>
+			<xsl:when test="$format = 'SDE Feature Class'">application/x-filegdb</xsl:when>
+			<xsl:otherwise><xsl:value-of select="$format"/></xsl:otherwise>
+		</xsl:choose>
 	</xsl:function>
   </xsl:stylesheet>
