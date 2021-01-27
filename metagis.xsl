@@ -90,6 +90,8 @@
         Multiple values can be used. The publisher might also choose to describe
         the language on the dataset level (see dataset language).
       -->
+			<foaf:homepage rdf:resource="{$catMDBaseUrl}"/>
+			<dcat:themeTaxonomy rdf:resource="http://publications.europa.eu/resource/authority/data-theme"/>	
 			<dct:language
 				rdf:resource="http://publications.europa.eu/resource/authority/language/SWE"/>
 			<dct:license rdf:resource="http://creativecommons.org/licenses/by/4.0/"/>
@@ -426,4 +428,13 @@
 			<xsl:otherwise><xsl:value-of select="$format"/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:function>
+	
+	<xsl:function name="iso19139:mapAccessConstraints" as="xs:string">
+		<xsl:param name="const" as="xs:string"/>
+		<xsl:choose>
+			<xsl:when test="$const = 'http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations'">http://publications.europa.eu/resource/authority/access-right/PUBLIC</xsl:when>
+			<xsl:otherwise>http://publications.europa.eu/resource/authority/access-right/RESTRICTED</xsl:otherwise>
+		</xsl:choose>
+	</xsl:function>
+	
   </xsl:stylesheet>
