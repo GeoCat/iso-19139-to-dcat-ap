@@ -71,6 +71,7 @@
     xmlns:xlink  = "http://www.w3.org/1999/xlink"
     xmlns:xsi    = "http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsl    = "http://www.w3.org/1999/XSL/Transform"
+    xmlns:iso19139 = "http://geonetwork-opensource.org/schemas/iso19139"
     exclude-result-prefixes="earl gco gmd gml gmx i i-gp srv xlink xsi xsl wdrs"
     version="1.0">
 
@@ -629,8 +630,8 @@
     <xsl:param name="Lineage">
       <xsl:for-each select="gmd:dataQualityInfo/*/gmd:lineage/*/gmd:statement">
         <dct:provenance>
-          <dct:ProvenanceStatement>
-            <rdfs:label xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(gco:CharacterString)"/></rdfs:label>
+          <dct:ProvenanceStatement rdf:about="{concat($catMDBaseUrl,'/',//gmd:fileIdentifier/*,'#provenance')}">
+            <dct:description xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(gco:CharacterString)"/></dct:description>
             <xsl:call-template name="LocalisedString">
               <xsl:with-param name="term">rdfs:label</xsl:with-param>
             </xsl:call-template>
@@ -1126,10 +1127,10 @@
 <!--      
       <xsl:if test="$profile = $extended">
 -->        
-        <xsl:apply-templates select="gmd:referenceSystemInfo/gmd:MD_ReferenceSystem/gmd:referenceSystemIdentifier/gmd:RS_Identifier">
+<!--         <xsl:apply-templates select="gmd:referenceSystemInfo/gmd:MD_ReferenceSystem/gmd:referenceSystemIdentifier/gmd:RS_Identifier">
           <xsl:with-param name="MetadataLanguage" select="$MetadataLanguage"/>
         </xsl:apply-templates>
-<!--      
+     
       </xsl:if>
 -->        
 <!-- Spatial resolution -->
@@ -1169,7 +1170,7 @@
             </xsl:variable>
 <!-- Resource locators (access / download URLs) -->
             <xsl:for-each select="gmd:transferOptions/*/gmd:onLine/*">
-              <xsl:variable name="url" select="gmd:linkage/gmd:URL"/>
+              <xsl:variable name="url" select="iso19139:processUrl(gmd:linkage/gmd:URL)"/>
               <xsl:variable name="protocol" select="gmd:protocol/*"/>
 	      <xsl:variable name="protocol-url" select="gmd:protocol/gmx:Anchor/@xlink:href"/>
               <xsl:variable name="function" select="gmd:function/gmd:CI_OnLineFunctionCode/@codeListValue"/>
@@ -1280,7 +1281,7 @@
 <!-- ?? Should foaf:page be detailed with title, description, etc.? -->
                   <xsl:for-each select="gmd:linkage/gmd:URL">
                     <foaf:page>
-                      <foaf:Document rdf:about="{.}">
+                      <foaf:Document rdf:about="{iso19139:processUrl(.)}">
                         <xsl:copy-of select="$TitleAndDescription"/>
                       </foaf:Document>
                     </foaf:page>
@@ -1290,7 +1291,7 @@
                 <xsl:otherwise>
                   <xsl:for-each select="gmd:linkage/gmd:URL">
                     <dcat:landingPage>
-                      <foaf:Document rdf:about="{.}">
+                      <foaf:Document rdf:about="{iso19139:processUrl(.)}">
                         <xsl:copy-of select="$TitleAndDescription"/>
                       </foaf:Document>
                     </dcat:landingPage>
@@ -1507,12 +1508,12 @@
     </xsl:param>
     <xsl:param name="URL">
       <xsl:for-each select="gmd:contactInfo/gmd:CI_Contact/gmd:onlineResource/gmd:CI_OnlineResource/gmd:linkage/gmd:URL[normalize-space() != '']">
-        <foaf:workplaceHomepage rdf:resource="{normalize-space(.)}"/>
+        <foaf:workplaceHomepage rdf:resource="{iso19139:processUrl(.)}"/>
       </xsl:for-each>
     </xsl:param>
     <xsl:param name="URL-vCard">
       <xsl:for-each select="gmd:contactInfo/gmd:CI_Contact/gmd:onlineResource/gmd:CI_OnlineResource/gmd:linkage/gmd:URL[normalize-space() != '']">
-        <vcard:hasURL rdf:resource="{normalize-space(.)}"/>
+        <vcard:hasURL rdf:resource="{iso19139:processUrl(.)}"/>
       </xsl:for-each>
     </xsl:param>
     <xsl:param name="Telephone">
@@ -1754,9 +1755,9 @@
       </xsl:when>
 -->
       <xsl:when test="$role = 'owner' and $profile = $extended">
-        <dct:rightsHolder>
+        <dct:publisher>
           <xsl:copy-of select="$ROInfo"/>
-        </dct:rightsHolder>
+        </dct:publisher>
       </xsl:when>
 <!--
       <xsl:when test="$role = 'user'">
@@ -1840,30 +1841,29 @@
 <!-- Mapping moved to core profile for compliance with DCAT-AP 2 -->
 <!--
     <xsl:if test="$profile = $extended">
--->
+
       <prov:qualifiedAttribution>
         <prov:Attribution>
-          <prov:agent>
+          <prov:agent>-->
 <!--          
             <xsl:copy-of select="$ResponsibleParty"/>
--->            
+            
             <xsl:copy-of select="$ROInfo"/>
-          </prov:agent>
-<!-- DEPRECATED: Mapping kept for backward compatibility with GeoDCAT-AP v1.* -->      
+          </prov:agent>-->
+<!-- DEPRECATED: Mapping kept for backward compatibility with GeoDCAT-AP v1.*      
           <xsl:if test="$profile = $extended">
             <dct:type rdf:resource="{$ResponsiblePartyRole}"/>
-	  </xsl:if>
-<!-- Mapping added for compliance with DCAT-AP 2 -->      
+	  </xsl:if>--> 
+<!-- Mapping added for compliance with DCAT-AP 2     
           <dcat:hadRole rdf:resource="{$ResponsiblePartyRole}"/>
         </prov:Attribution>
-      </prov:qualifiedAttribution>
+      </prov:qualifiedAttribution>-->  
 <!--          
     </xsl:if>
 -->            
   </xsl:template>
 
 <!-- Metadata point of contact -->
-<!--
   <xsl:template name="MetadataPointOfContact" match="gmd:contact/gmd:CI_ResponsibleParty">
     <xsl:param name="MetadataLanguage"/>
     <xsl:param name="ResponsiblePartyRole">
@@ -1885,6 +1885,7 @@
     <dcat:contactPoint>
       <xsl:copy-of select="$ResponsibleParty"/>
     </dcat:contactPoint>
+    <!--
     <xsl:if test="$profile = $extended">
       <prov:qualifiedAttribution>
         <prov:Attribution>
@@ -1894,9 +1895,9 @@
           <dct:type rdf:resource="{$ResponsiblePartyRole}"/>
         </prov:Attribution>
       </prov:qualifiedAttribution>
-    </xsl:if>
+    </xsl:if>-->
   </xsl:template>
--->
+
 <!-- Resource locator -->
 <!-- Old version, applied to the resource (not to the resource distribution)
   <xsl:template name="ResourceLocator" match="gmd:distributionInfo/*/gmd:transferOptions/*/gmd:onLine/*/gmd:linkage">
@@ -2236,10 +2237,7 @@
 -->
       </xsl:when>
       <xsl:when test="$GeoCode != ''">
-        <dct:spatial rdf:parseType="Resource">
-<!--
-          <rdfs:seeAlso rdf:parseType="Resource">
--->
+        <!--      <dct:spatial rdf:parseType="Resource">
           <xsl:choose>
             <xsl:when test="$GeoURN != ''">
               <dct:identifier rdf:datatype="{$xsd}anyURI"><xsl:value-of select="$GeoURN"/></dct:identifier>
@@ -2260,10 +2258,10 @@
               </skos:ConceptScheme>
             </skos:inScheme>
           </xsl:for-each>
-<!--
+
           </rdfs:seeAlso>
--->
-        </dct:spatial>
+
+        </dct:spatial>-->
       </xsl:when>
     </xsl:choose>
   </xsl:template>
@@ -2308,22 +2306,24 @@
 <!-- Bbox as GeoJSON -->
 
     <xsl:param name="GeoJSONLiteral">{"type":"Polygon","crs":{"type":"name","properties":{"name":"<xsl:value-of select="$SrsUrn"/>"}},"coordinates":[[[<xsl:value-of select="$west"/><xsl:text>,</xsl:text><xsl:value-of select="$north"/>],[<xsl:value-of select="$east"/><xsl:text>,</xsl:text><xsl:value-of select="$north"/>],[<xsl:value-of select="$east"/><xsl:text>,</xsl:text><xsl:value-of select="$south"/>],[<xsl:value-of select="$west"/><xsl:text>,</xsl:text><xsl:value-of select="$south"/>],[<xsl:value-of select="$west"/><xsl:text>,</xsl:text><xsl:value-of select="$north"/>]]]}</xsl:param>
-    <dct:spatial rdf:parseType="Resource">
+    <dct:spatial>
+      <dct:Location rdf:about="{concat($catMDBaseUrl,'/',//gmd:fileIdentifier/gco:CharacterString,'#spatial')}">
 <!-- DEPRECATED: Mapping kept for backward compatibility with GeoDCAT-AP v1.* -->      
-<!-- Recommended geometry encodings -->
+<!-- Recommended geometry encodings 
       <locn:geometry rdf:datatype="{$gsp}wktLiteral"><xsl:value-of select="$WKTLiteral"/></locn:geometry>
-      <locn:geometry rdf:datatype="{$gsp}gmlLiteral"><xsl:value-of select="$GMLLiteral"/></locn:geometry>
-<!-- Additional geometry encodings -->
-      <locn:geometry rdf:datatype="{$geojsonMediaTypeUri}"><xsl:value-of select="$GeoJSONLiteral"/></locn:geometry>
+      <locn:geometry rdf:datatype="{$gsp}gmlLiteral"><xsl:value-of select="$GMLLiteral"/></locn:geometry>-->
+<!-- Additional geometry encodings 
+      <locn:geometry rdf:datatype="{$geojsonMediaTypeUri}"><xsl:value-of select="$GeoJSONLiteral"/></locn:geometry>-->
 <!--
       <locn:geometry rdf:datatype="{$dct}Box"><xsl:value-of select="$DCTBox"/></locn:geometry>
 -->
 <!-- Mapping added for compliance with DCAT-AP 2 -->      
 <!-- Recommended geometry encodings -->
       <dcat:bbox rdf:datatype="{$gsp}wktLiteral"><xsl:value-of select="$WKTLiteral"/></dcat:bbox>
-      <dcat:bbox rdf:datatype="{$gsp}gmlLiteral"><xsl:value-of select="$GMLLiteral"/></dcat:bbox>
-<!-- Additional geometry encodings -->
-      <dcat:bbox rdf:datatype="{$geojsonMediaTypeUri}"><xsl:value-of select="$GeoJSONLiteral"/></dcat:bbox>
+  <!--    <dcat:bbox rdf:datatype="{$gsp}gmlLiteral"><xsl:value-of select="$GMLLiteral"/></dcat:bbox>
+ Additional geometry encodings
+      <dcat:bbox rdf:datatype="{$geojsonMediaTypeUri}"><xsl:value-of select="$GeoJSONLiteral"/></dcat:bbox> -->
+      </dct:Location> 
     </dct:spatial>
   </xsl:template>
 
@@ -2666,7 +2666,7 @@
         </dct:title>
         <xsl:apply-templates select="gmd:date/gmd:CI_Date"/>
       </xsl:for-each>
--->
+
       <xsl:for-each select="gmd:thesaurusName/gmd:CI_Citation">
         <xsl:for-each select="gmd:title">
           <dct:title xml:lang="{$MetadataLanguage}">
@@ -2705,132 +2705,11 @@
             <xsl:copy-of select="$ConceptScheme"/>
           </skos:inScheme>
         </xsl:otherwise>
-      </xsl:choose>
+      </xsl:choose>-->
     </xsl:param>
+    
     <xsl:for-each select="gmd:keyword[normalize-space(gco:CharacterString) != '' or normalize-space(gmx:Anchor/@xlink:href) != '']">
-      <xsl:variable name="lckw" select="translate(*[self::gco:CharacterString|self::gmx:Anchor],$uppercase,$lowercase)"/>
-      <xsl:choose>
-        <xsl:when test="normalize-space($OriginatingControlledVocabulary) = '' and not( gmx:Anchor/@xlink:href and ( starts-with(gmx:Anchor/@xlink:href, 'http://') or starts-with(gmx:Anchor/@xlink:href, 'https://') ) )">
-          <xsl:choose>
-            <xsl:when test="$ResourceType = 'service'">
-<!-- Mapping moved to core profile for compliance with DCAT-AP 2 -->
-<!-- Mapping added for compliance with DCAT-AP 2 -->      
-              <dcat:keyword xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(*[self::gco:CharacterString|self::gmx:Anchor])"/></dcat:keyword>
-              <xsl:call-template name="LocalisedString">
-                <xsl:with-param name="term">dcat:keyword</xsl:with-param>
-              </xsl:call-template>
-              <xsl:if test="$profile = $extended">
-<!-- DEPRECATED: Mapping kept for backward compatibility with GeoDCAT-AP v1.* -->      
-                <dc:subject xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(*[self::gco:CharacterString|self::gmx:Anchor])"/></dc:subject>
-                <xsl:call-template name="LocalisedString">
-                  <xsl:with-param name="term">dc:subject</xsl:with-param>
-                </xsl:call-template>
-              </xsl:if>
-            </xsl:when>
-            <xsl:otherwise>
-              <dcat:keyword xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(*[self::gco:CharacterString|self::gmx:Anchor])"/></dcat:keyword>
-              <xsl:call-template name="LocalisedString">
-                <xsl:with-param name="term">dcat:keyword</xsl:with-param>
-              </xsl:call-template>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:choose>
-<!-- In case the concept's URI is NOT provided -->
-            <xsl:when test="gco:CharacterString">
-              <xsl:choose>
-                <xsl:when test="$ResourceType != 'service'">
-                  <dcat:theme rdf:parseType="Resource">
-                    <skos:prefLabel xml:lang="{$MetadataLanguage}">
-                      <xsl:value-of select="normalize-space(gco:CharacterString)"/>
-                    </skos:prefLabel>
-                    <xsl:call-template name="LocalisedString">
-                      <xsl:with-param name="term">skos:prefLabel</xsl:with-param>
-                    </xsl:call-template>
-                    <xsl:copy-of select="$inScheme"/>
-<!--
-                    <skos:inScheme>
-                      <skos:ConceptScheme>
-                        <xsl:copy-of select="$OriginatingControlledVocabulary"/>
-                      </skos:ConceptScheme>
-                    </skos:inScheme>
--->
-                  </dcat:theme>
-                </xsl:when>
-                <xsl:otherwise>
-<!-- Mapping moved to core profile for compliance with DCAT-AP 2 -->
-<!-- Mapping added for compliance with DCAT-AP 2 -->      
-                  <dcat:theme rdf:parseType="Resource">
-                    <skos:prefLabel xml:lang="{$MetadataLanguage}">
-                      <xsl:value-of select="normalize-space(gco:CharacterString)"/>
-                    </skos:prefLabel>
-                    <xsl:call-template name="LocalisedString">
-                      <xsl:with-param name="term">skos:prefLabel</xsl:with-param>
-                    </xsl:call-template>
-                    <xsl:copy-of select="$inScheme"/>
-<!--
-                    <skos:inScheme>
-                      <skos:ConceptScheme>
-                        <xsl:copy-of select="$OriginatingControlledVocabulary"/>
-                      </skos:ConceptScheme>
-                    </skos:inScheme>
--->
-                  </dcat:theme>
-                  <xsl:if test="$profile = $extended">
-<!-- DEPRECATED: Mapping kept for backward compatibility with GeoDCAT-AP v1.* -->      
-                    <dct:subject rdf:parseType="Resource">
-                      <skos:prefLabel xml:lang="{$MetadataLanguage}">
-                        <xsl:value-of select="normalize-space(gco:CharacterString)"/>
-                      </skos:prefLabel>
-                      <xsl:call-template name="LocalisedString">
-                        <xsl:with-param name="term">skos:prefLabel</xsl:with-param>
-                      </xsl:call-template>
-                      <xsl:copy-of select="$inScheme"/>
-<!--
-                      <skos:inScheme>
-                        <skos:ConceptScheme>
-                          <xsl:copy-of select="$OriginatingControlledVocabulary"/>
-                        </skos:ConceptScheme>
-                      </skos:inScheme>
--->
-                    </dct:subject>
-                  </xsl:if>
-                </xsl:otherwise>
-              </xsl:choose>
-            </xsl:when>
-<!-- In case the concept's URI is provided -->
-            <xsl:when test="gmx:Anchor/@xlink:href">
-              <xsl:choose>
-                <xsl:when test="$ResourceType != 'service'">
-                  <dcat:theme rdf:resource="{gmx:Anchor/@xlink:href}"/>
-<!--
-                  <skos:Concept rdf:about="{gmx:Anchor/@xlink:href}">
-                    <skos:prefLabel xml:lang="{$MetadataLanguage}">
-                      <xsl:value-of select="gmx:Anchor"/>
-                    </skos:prefLabel>
-                    <skos:inScheme>
-                      <skos:ConceptScheme>
-                        <xsl:copy-of select="$OriginatingControlledVocabulary"/>
-                      </skos:ConceptScheme>
-                    </skos:inScheme>
-                  </skos:Concept>
--->
-                </xsl:when>
-                <xsl:otherwise>
-<!-- Mapping moved to core profile for compliance with DCAT-AP 2 -->
-<!-- Mapping added for compliance with DCAT-AP 2 -->      
-                  <dcat:theme rdf:resource="{gmx:Anchor/@xlink:href}"/>
-                  <xsl:if test="$profile = $extended">
-<!-- DEPRECATED: Mapping kept for backward compatibility with GeoDCAT-AP v1.* -->      
-                    <dct:subject rdf:resource="{gmx:Anchor/@xlink:href}"/>
-                  </xsl:if>
-                </xsl:otherwise>
-              </xsl:choose>
-            </xsl:when>
-          </xsl:choose>
-        </xsl:otherwise>
-      </xsl:choose>
+        <dcat:keyword xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(*[self::gco:CharacterString|self::gmx:Anchor])"/></dcat:keyword>
     </xsl:for-each>
   </xsl:template>
 
@@ -2839,9 +2718,9 @@
   <xsl:template name="TopicCategory" match="gmd:identificationInfo/*/gmd:topicCategory">
     <xsl:param name="TopicCategory"><xsl:value-of select="normalize-space(gmd:MD_TopicCategoryCode)"/></xsl:param>
     <xsl:if test="$TopicCategory != ''">
-      <dct:subject rdf:resource="{$TopicCategoryCodelistUri}/{$TopicCategory}"/>
+      <dcat:theme rdf:resource="{iso19139:getTopic($TopicCategory)}"/>
     </xsl:if>
-  </xsl:template>
+  </xsl:template> 
 
 <!-- Spatial resolution (unstable - to be replaced with a standard-based solution, when available) -->
 
@@ -3079,7 +2958,7 @@
           <xsl:when test="@codeListValue = 'asNeeded'">
 <!--  A mapping is missing in Dublin Core -->
 <!--  A mapping is missing in MDR Freq NAL -->
-            <xsl:value-of select="concat($MaintenanceFrequencyCodelistUri,'/',@codeListValue)"/>
+            <xsl:value-of select="concat($opfq,@codeListValue)"/>
           </xsl:when>
           <xsl:when test="@codeListValue = 'irregular'">
 <!--  DC Freq voc
@@ -3090,14 +2969,14 @@
           <xsl:when test="@codeListValue = 'notPlanned'">
 <!--  A mapping is missing in Dublin Core -->
 <!--  A mapping is missing in MDR Freq NAL -->
-            <xsl:value-of select="concat($MaintenanceFrequencyCodelistUri,'/',@codeListValue)"/>
+            <xsl:value-of select="concat($opfq,'IRREG')"/>
           </xsl:when>
           <xsl:when test="@codeListValue = 'unknown'">
 <!--  A mapping is missing in Dublin Core -->
 <!--  INSPIRE Freq code list (not yet available)
             <xsl:value-of select="concat($MaintenanceFrequencyCodelistUri,'/',@codeListValue)"/>
 -->
-            <xsl:value-of select="concat($opfq,'UNKNOWN')"/>
+            <xsl:value-of select="concat($opfq,'IRREG')"/>
           </xsl:when>
         </xsl:choose>
       </xsl:if>

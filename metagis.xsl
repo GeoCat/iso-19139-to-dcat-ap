@@ -294,7 +294,7 @@
 		</xsl:when>
 		<xsl:when test="$protocol = 'HTTP:OGC:WFS'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{$linkurl}/{$mdURI}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($linkurl,'/',$mdURI))}">
 					<!-- Title and description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
@@ -349,7 +349,7 @@
 		<xsl:variable name="url3" select="translate($url2, '}', '')"/>
 		
 		<xsl:variable name="urlFixedProtocol"
-			select="iso19139:addUrlProtocol(translate($url3, ' ', ''))"/>
+			select="iso19139:addUrlProtocol(translate($url3, ' ', '+'))"/>
 		
 		<!-- Replace placeholder elements in url between [] symbols, removing the []. Example:
 			
@@ -396,4 +396,19 @@
 		</xsl:choose>
 	</xsl:function>
 
+	<xsl:function name="iso19139:getTopic" as="xs:string">
+		<xsl:param name="TopicCategory" as="xs:string"/>
+			<xsl:choose>
+				<xsl:when test="$TopicCategory = 'farming'">http://publications.europa.eu/resource/authority/data-theme/AGRI</xsl:when>
+				<xsl:when test="$TopicCategory = 'economy'">http://publications.europa.eu/resource/authority/data-theme/ECON</xsl:when>
+				<xsl:when test="$TopicCategory = 'planningCadastre'">http://publications.europa.eu/resource/authority/data-theme/GOVE</xsl:when>
+				<xsl:when test="$TopicCategory = 'health'">http://publications.europa.eu/resource/authority/data-theme/HEAL</xsl:when>
+				<xsl:when test="$TopicCategory = 'intelligenceMilitary'">http://publications.europa.eu/resource/authority/data-theme/JUST</xsl:when>
+				<xsl:when test="$TopicCategory = 'society' or $TopicCategory = 'structure'">http://publications.europa.eu/resource/authority/data-theme/SOCI</xsl:when>
+				<xsl:when test="$TopicCategory = 'boundaries'">http://publications.europa.eu/resource/authority/data-theme/REGI</xsl:when>
+				<xsl:when test="$TopicCategory = 'geoscientificInformation' or $TopicCategory = 'utilitiesCommunication' or $TopicCategory = 'imageryBaseMapsEarthCover' or $TopicCategory = 'location'">http://publications.europa.eu/resource/authority/data-theme/TECH</xsl:when>
+				<xsl:when test="$TopicCategory = 'inlandWaters' or $TopicCategory = 'transport'">http://publications.europa.eu/resource/authority/data-theme/TRAN</xsl:when>
+				<xsl:otherwise>http://publications.europa.eu/resource/authority/data-theme/ENVI</xsl:otherwise>
+			</xsl:choose>
+	</xsl:function>
   </xsl:stylesheet>
