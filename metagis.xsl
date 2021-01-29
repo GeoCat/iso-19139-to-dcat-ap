@@ -91,6 +91,8 @@
         the language on the dataset level (see dataset language).
       -->
 			<foaf:homepage rdf:resource="{$catMDBaseUrl}"/>
+			<dct:issued><xsl:value-of select="current-dateTime()"/></dct:issued>
+			<dct:modified><xsl:value-of select="current-dateTime()"/></dct:modified>
 			<dcat:themeTaxonomy rdf:resource="http://publications.europa.eu/resource/authority/data-theme"/>	
 			<dct:language
 				rdf:resource="http://publications.europa.eu/resource/authority/language/SWE"/>
@@ -414,7 +416,7 @@
 			</xsl:choose>
 	</xsl:function>
 	
-	<xsl:function name="iso19139:mapFormat" as="xs:string">
+	<xsl:function name="iso19139:mapFormat">
 		<xsl:param name="format" as="xs:string"/>
 		<xsl:choose>
 			<xsl:when test="$format = 'ESRI Shape'">application/x-shapefile</xsl:when>
@@ -425,7 +427,6 @@
 			<xsl:when test="$format = 'FGDB'">application/x-filegdb</xsl:when>
 			<xsl:when test="$format = 'GEOJSON'">application/geo+json</xsl:when>
 			<xsl:when test="$format = 'SDE Feature Class'">application/x-filegdb</xsl:when>
-			<xsl:otherwise><xsl:value-of select="$format"/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:function>
 	
