@@ -383,6 +383,7 @@
 
     <xsl:param name="ormlang">
       <xsl:choose>
+        <xsl:when test="string-length(gmd:language/gmd:LanguageCode/@codeListValue)=2">swe</xsl:when>
         <xsl:when test="gmd:language/gmd:LanguageCode/@codeListValue != ''">
           <xsl:value-of select="translate(gmd:language/gmd:LanguageCode/@codeListValue,$uppercase,$lowercase)"/>
         </xsl:when>
@@ -479,6 +480,7 @@
 
     <xsl:param name="orrlang">
       <xsl:choose>
+        <xsl:when test="string-length(gmd:identificationInfo/*/gmd:language/gmd:LanguageCode/@codeListValue)=2">swe</xsl:when>
         <xsl:when test="gmd:identificationInfo/*/gmd:language/gmd:LanguageCode/@codeListValue != ''">
           <xsl:value-of select="translate(gmd:identificationInfo/*/gmd:language/gmd:LanguageCode/@codeListValue,$uppercase,$lowercase)"/>
         </xsl:when>
@@ -627,16 +629,16 @@
     </xsl:param>
 -->
     <xsl:param name="Lineage">
-      <xsl:for-each select="gmd:dataQualityInfo/*/gmd:lineage/*/gmd:statement">
+     <!-- <xsl:for-each select="gmd:dataQualityInfo/*/gmd:lineage/*/gmd:statement">
         <dct:provenance>
-          <dct:ProvenanceStatement> <!-- rdf:about="{concat($catMDBaseUrl,'/',//gmd:fileIdentifier/*,'#provenance')}">-->
+          <dct:ProvenanceStatement>
             <dct:description xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(gco:CharacterString)"/></dct:description>
             <xsl:call-template name="LocalisedString">
               <xsl:with-param name="term">rdfs:label</xsl:with-param>
             </xsl:call-template>
           </dct:ProvenanceStatement>
         </dct:provenance>
-      </xsl:for-each>
+      </xsl:for-each>-->
     </xsl:param>
     
     <xsl:param name="MetadataDate">
@@ -889,6 +891,15 @@
             <xsl:with-param name="ResourceType" select="$ResourceType"/>
           </xsl:apply-templates>
         </xsl:for-each>
+        <!-- if no metadata contact, use owner -->
+        <xsl:if test="count(gmd:contact) = 0">
+          <xsl:for-each select="//gmd:pointOfContact[gmd:CI_ResponsibleParty/gmd:role/gmd:CI_RoleCode/@codeListValue='owner']">
+            <xsl:apply-templates select="gmd:CI_ResponsibleParty">
+              <xsl:with-param name="MetadataLanguage" select="$MetadataLanguage"/>
+              <xsl:with-param name="ResourceType" select="$ResourceType"/>
+            </xsl:apply-templates>
+          </xsl:for-each>
+        </xsl:if>
 <!-- Old version      
         <xsl:apply-templates select="gmd:contact/gmd:CI_ResponsibleParty">
           <xsl:with-param name="MetadataLanguage" select="$MetadataLanguage"/>
@@ -1165,7 +1176,9 @@
           <xsl:for-each select="gmd:distributionInfo/gmd:MD_Distribution">
 <!-- Encoding -->
             <xsl:variable name="Encoding">
-               <xsl:apply-templates select="gmd:distributionFormat/gmd:MD_Format/gmd:name/*"/>
+              <xsl:for-each select="gmd:distributionFormat/gmd:MD_Format/gmd:name/*[iso19139:mapFormat(.)!='']">
+                <dct:format><xsl:value-of select="iso19139:mapFormat(.)"/></dct:format>
+              </xsl:for-each>
             </xsl:variable>
 <!-- Resource locators (access / download URLs) -->
             <xsl:for-each select="gmd:transferOptions/*/gmd:onLine/*">
@@ -1239,7 +1252,7 @@
                         <dcat:accessURL rdf:resource="{.}"/>
                       </xsl:for-each>
 -->
-		      <xsl:choose>
+		     <!-- <xsl:choose>
                         <xsl:when test="$points-to-service = 'yes'">
                           <dcat:accessService rdf:parseType="Resource">
                             <dcat:DataService rdf:about="$url">
@@ -1249,19 +1262,19 @@
                               <xsl:with-param name="url" select="$url"/>
                             </xsl:call-template>
                           
-		            <!--<xsl:if test="$profile = $extended">
+		            <xsl:if test="$profile = $extended">
                               <xsl:call-template name="service-protocol">
                                 <xsl:with-param name="function" select="$function"/>
                                 <xsl:with-param name="protocol" select="$protocol"/>
                                 <xsl:with-param name="url" select="$url"/>
                               </xsl:call-template>
-		            </xsl:if>-->
+		            </xsl:if>
                             </dcat:DataService>
                           </dcat:accessService>
 			</xsl:when>
 			<xsl:otherwise>
 			</xsl:otherwise>
-		      </xsl:choose>
+		      </xsl:choose>-->
                       <dcat:accessURL rdf:resource="{$url}"/>
 
 <!-- Constraints related to access and use -->
@@ -1271,7 +1284,7 @@
                         <xsl:copy-of select="$SpatialRepresentationType"/>
                       </xsl:if>
 <!-- Encoding -->
-                      <xsl:copy-of select="$Encoding"/>
+                      <xsl:copy-of select="$Encoding[1]"/>
 <!-- Resource character encoding -->
                       <xsl:if test="$profile = $extended">
                         <xsl:copy-of select="$ResourceCharacterEncoding"/>
@@ -1513,6 +1526,9 @@
       <xsl:for-each select="gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/*[normalize-space() != '']">
         <vcard:hasEmail rdf:resource="mailto:{normalize-space(.)}"/>
       </xsl:for-each>
+      <xsl:if test="count(gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/*[normalize-space() != '']) = 0">
+        <vcard:hasEmail rdf:resource="mailto:{$ifNoEmail}"/>
+      </xsl:if>
     </xsl:param>
     <xsl:param name="URL">
       <xsl:for-each select="gmd:contactInfo/gmd:CI_Contact/gmd:onlineResource/gmd:CI_OnlineResource/gmd:linkage/gmd:URL[normalize-space() != '']">
@@ -1648,13 +1664,13 @@
       </xsl:variable>
       <xsl:choose>
         <xsl:when test="$IndividualURI != ''">
-          <foaf:Person rdf:about="{$IndividualURI}"/>
+          <foaf:Person rdf:about="{$IndividualURI}#foaf"/>
         </xsl:when>
         <xsl:when test="$OrganisationURI != ''">
-          <foaf:Organization rdf:about="{$OrganisationURI}"/>
+          <foaf:Organization rdf:about="{$OrganisationURI}#foaf"/>
         </xsl:when>
         <xsl:otherwise>
-          <rdf:Description  rdf:about="{iso19139:processUrl(concat($catMDBaseUrl,'/',//gmd:fileIdentifier/*,'#',(if ($IndividualName!='') then $IndividualName else  $OrganisationName)))}">
+          <rdf:Description>
             <xsl:copy-of select="$info"/>
           </rdf:Description>
         </xsl:otherwise>
@@ -1712,17 +1728,17 @@
       </xsl:variable>
       <xsl:choose>
         <xsl:when test="$IndividualURI != ''">
-          <rdf:Description rdf:resource="{$IndividualURI}">
+          <rdf:Description rdf:resource="{$IndividualURI}#vcard">
             <xsl:copy-of select="$info"/>
           </rdf:Description>
         </xsl:when>
         <xsl:when test="$OrganisationURI != ''">
-          <rdf:Description rdf:resource="{$OrganisationURI}">
+          <rdf:Description rdf:resource="{$OrganisationURI}#vcard">
             <xsl:copy-of select="$info"/>
           </rdf:Description>
         </xsl:when>
         <xsl:otherwise>
-          <rdf:Description rdf:about="{iso19139:processUrl(concat($catMDBaseUrl,'/',//gmd:fileIdentifier/*,'#',(if ($IndividualName!='') then $IndividualName else  $OrganisationName)))}">
+          <rdf:Description>
             <xsl:copy-of select="$info"/>
           </rdf:Description>
         </xsl:otherwise>
@@ -2884,9 +2900,9 @@
 -->
       </xsl:when>
       <xsl:otherwise>
-        <dct:format rdf:parseType="Resource">
-          <rdfs:label><xsl:value-of select="iso19139:mapFormat(.)"/></rdfs:label>
-        </dct:format>
+        
+        
+        <dct:format><xsl:value-of select="iso19139:mapFormat(.)"/></dct:format>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
