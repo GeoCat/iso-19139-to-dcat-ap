@@ -103,7 +103,7 @@
   <xsl:variable name="profile-core-uri">http://data.europa.eu/r5r/</xsl:variable>
   <xsl:variable name="profile-extended-uri">http://data.europa.eu/930/</xsl:variable>
 
-  <xsl:include href="stockholm.xsl"/>
+  <xsl:include href="nv.xsl"/>
   <xsl:include href="metagis.xsl"/>
 
 <!--
@@ -1148,7 +1148,7 @@
 <!--
       <xsl:if test="$profile = $extended">
 -->        
-        <xsl:apply-templates select="gmd:identificationInfo/*/gmd:spatialResolution/gmd:MD_Resolution"/>
+        <xsl:apply-templates select="gmd:identificationInfo/*/gmd:spatialResolution[1]/gmd:MD_Resolution"/>
 <!--
       </xsl:if>
 -->   
@@ -1318,11 +1318,10 @@
             </xsl:for-each>
           </xsl:for-each>
       
-      <!-- dct:accessRights -->
-      <xsl:for-each select="gmd:identificationInfo/*/gmd:resourceConstraints/gmd:MD_LegalConstraints/gmd:otherConstraints[../gmd:accessConstraints/gmd:MD_RestrictionCode/@codeListValue='otherRestrictions']/gmx:Anchor/@xlink:href[contains(.,'LimitationsOnPublicAccess')]">
-        <dct:accessRights rdf:resource="{iso19139:mapAccessConstraints(.)}"/>
-      </xsl:for-each>
-      
+      <!-- dct:accessRights take the first hit on otherconstraints containing an anchor referencing either the inspire or national codelist -->
+      <dct:accessRights rdf:resource="{iso19139:mapAccessConstraints(string(gmd:identificationInfo/*/gmd:resourceConstraints/gmd:MD_LegalConstraints/gmd:otherConstraints[../gmd:accessConstraints/gmd:MD_RestrictionCode/@codeListValue='otherRestrictions']/gmx:Anchor/@xlink:href[contains(.,'LimitationsOnPublicAccess') or contains(.,'atkomstrestriktioner.xml')][1]))}"/>
+
+      <dct:license rdf:resource="{iso19139:mapUsageConstraints(string(gmd:identificationInfo/*/gmd:resourceConstraints/gmd:MD_LegalConstraints/gmd:otherConstraints[../gmd:useConstraints/gmd:MD_RestrictionCode/@codeListValue='otherRestrictions']/gmx:Anchor/@xlink:href[contains(.,'ConditionsApplyingToAccessAndUse') or contains(.,'anvandningsrestriktioner.xml')][1]))}"/>
 
       <xsl:for-each select="gmd:identificationInfo/*/gmd:pointOfContact">
         <xsl:apply-templates select="gmd:CI_ResponsibleParty">
@@ -2466,7 +2465,7 @@
     </xsl:choose>
   </xsl:template>
 
-<!-- Constraints related to access and use -->
+<!-- Constraints related to access and use
 
   <xsl:template name="ConstraintsRelatedToAccessAndUse" match="gmd:identificationInfo[1]/*/gmd:resourceConstraints/*">
     <xsl:param name="MetadataLanguage"/>
@@ -2478,7 +2477,7 @@
     </xsl:param>
     <xsl:param name="LimitationsOnPublicAccessURL">
       <xsl:value-of select="gmd:MD_LegalConstraints/gmd:otherConstraints/*/@xlink:href"/>
-    </xsl:param>
+    </xsl:param> -->
 
 <!-- DEPRECATED: This mapping is not compliant with the 2017 edition of the INSPIRE Metadata 
                  Technical Guidelines, where use conditions are specified instead by element
@@ -2555,49 +2554,7 @@
     </xsl:for-each>-->
 
 <!-- Mapping added for compliance with the 2017 edition of the INSPIRE Metadata Technical Guidelines -->    
-    <xsl:for-each select="gmd:otherConstraints[../gmd:useConstraints]">
-      <xsl:choose>
-<!-- In case the rights/licence URL IS NOT provided 
-        <xsl:when test="normalize-space(gco:CharacterString) != ''">
-          <dct:license>
-            <dct:LicenseDocument>
-              <rdfs:label xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(gco:CharacterString)"/></rdfs:label>
-              <xsl:call-template name="LocalisedString">
-                <xsl:with-param name="term">rdfs:label</xsl:with-param>
-              </xsl:call-template>
-            </dct:LicenseDocument>
-          </dct:license>
-        </xsl:when>
-	<xsl:when test="gmd:MD_RestrictionCode">
-	  <xsl:variable name="use-constraints-code" select="normalize-space(@codeListValue)"/>
-	  <xsl:variable name="use-constraints-text">
-            <xsl:choose>
-              <xsl:when test="normalize-space(.) != ''">
-                <xsl:value-of select="normalize-space(.)"/> 
-	      </xsl:when>
-	      <xsl:when test="$use-constraints-code != ''">
-                <xsl:value-of select="$use-constraints-code"/> 
-              </xsl:when>
-            </xsl:choose>
-          </xsl:variable>
-          <dct:license>
-            <dct:LicenseDocument>
-              <xsl:if test="$use-constraints-code != ''">
-                <dct:identifier rdf:datatype="{$xsd}string"><xsl:value-of select="$use-constraints-code"/></dct:identifier>
-	      </xsl:if>
-              <rdfs:label xml:lang="{$MetadataLanguage}"><xsl:value-of select="$use-constraints-text"/></rdfs:label>
-              <xsl:call-template name="LocalisedString">
-                <xsl:with-param name="term">rdfs:label</xsl:with-param>
-              </xsl:call-template>
-            </dct:LicenseDocument>
-          </dct:license>
-        </xsl:when>-->
-<!-- In case the rights/licence URL IS provided -->
-        <xsl:when test="gmx:Anchor/@xlink:href">
-          <dct:license rdf:resource="{gmx:Anchor/@xlink:href}"/>
-        </xsl:when>
-      </xsl:choose>
-    </xsl:for-each>
+    
 
 <!-- Mapping revised for compliance with the 2017 edition of the INSPIRE Metadata Technical Guidelines -->    
   <!--  <xsl:for-each select="gmd:otherConstraints[../gmd:accessConstraints]">
@@ -2655,8 +2612,8 @@
   <!--  <xsl:for-each select="gmd:classification">
       <dct:accessRights rdf:resource="{$MD_ClassificationCode}_{gmd:MD_ClassificationCode/@codeListValue}"/>
     </xsl:for-each>
--->
-  </xsl:template>
+
+  </xsl:template>-->
 
 <!-- Keyword -->
 
@@ -2741,7 +2698,7 @@
       <dcat:granularity rdf:datatype="{$xsd}string">1/<xsl:value-of select="gco:Integer"/></dcat:granularity>
     </xsl:for-each>
 -->
-    <xsl:for-each select="gmd:distance/gco:Distance">
+    <xsl:for-each select="gmd:distance[1]/gco:Distance[1]">
       <xsl:variable name="UoM">
         <xsl:choose>
           <xsl:when test="@uom = 'EPSG::9001' or @uom = 'urn:ogc:def:uom:EPSG::9001' or @uom = 'urn:ogc:def:uom:UCUM::m' or @uom = 'urn:ogc:def:uom:OGC::m'">
@@ -2759,9 +2716,9 @@
           </xsl:otherwise>
         </xsl:choose>
       </xsl:variable>
-      <xsl:if test="$profile = $extended">
+   <!--   <xsl:if test="$profile = $extended">
         <rdfs:comment xml:lang="en">Spatial resolution (distance): <xsl:value-of select="."/>&#160;<xsl:value-of select="$UoM"/></rdfs:comment>
-      </xsl:if>
+      </xsl:if>-->
 <!-- Mapping moved to core profile for compliance with DCAT-AP 2 -->     
 <!-- Mapping added for compliance with DCAT-AP 2 -->     
       <xsl:choose>
@@ -2776,11 +2733,11 @@
 	</xsl:when>
       </xsl:choose>
     </xsl:for-each>
-    <xsl:if test="$profile = $extended">
-      <xsl:for-each select="gmd:equivalentScale/gmd:MD_RepresentativeFraction/gmd:denominator">
+    <!--<xsl:if test="$profile = $extended">
+      <xsl:for-each select="gmd:equivalentScale/gmd:MD_RepresentativeFraction/gmd:denominator[1]">
         <rdfs:comment xml:lang="en">Spatial resolution (equivalent scale): 1:<xsl:value-of select="gco:Integer"/></rdfs:comment>
       </xsl:for-each>
-    </xsl:if>
+    </xsl:if>-->
   </xsl:template>
 
 <!-- Character encoding -->

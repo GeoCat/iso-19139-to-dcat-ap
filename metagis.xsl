@@ -91,8 +91,8 @@
         the language on the dataset level (see dataset language).
       -->
 			<foaf:homepage rdf:resource="{$catMDBaseUrl}"/>
-			<dct:issued><xsl:value-of select="current-dateTime()"/></dct:issued>
-			<dct:modified><xsl:value-of select="current-dateTime()"/></dct:modified>
+			<dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"><xsl:value-of select="current-dateTime()"/></dct:issued>
+			<dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"><xsl:value-of select="current-dateTime()"/></dct:modified>
 			<dcat:themeTaxonomy rdf:resource="http://publications.europa.eu/resource/authority/data-theme"/>	
 			<dct:language
 				rdf:resource="http://publications.europa.eu/resource/authority/language/SWE"/>
@@ -431,11 +431,30 @@
 	</xsl:function>
 	
 	<xsl:function name="iso19139:mapAccessConstraints" as="xs:string">
-		<xsl:param name="const" as="xs:string"/>
+		<!-- there is currently no value in swedisch access rights to indicate "unknown", an option is to leave the element empty -->
+		<xsl:param name="const" as="xs:string" required="no" />
 		<xsl:choose>
 			<xsl:when test="$const = 'http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations'">http://publications.europa.eu/resource/authority/access-right/PUBLIC</xsl:when>
+			<xsl:when test="$const = 'https://resources.geodata.se/codelist/metadata/atkomstrestriktioner.xml#IngaBegransningar'">http://publications.europa.eu/resource/authority/access-right/PUBLIC</xsl:when>
+			<xsl:when test="$const = 'https://resources.geodata.se/codelist/metadata/atkomstrestriktioner.xml#IngenBegransning'">http://publications.europa.eu/resource/authority/access-right/PUBLIC</xsl:when>
+			<!--<xsl:when test="$const = 'https://resources.geodata.se/codelist/metadata/atkomstrestriktioner.xml#OkandaBegransningar'">https://resources.geodata.se/codelist/metadata/atkomstrestriktioner.xml#OkandaBegransningar</xsl:when>-->
 			<xsl:otherwise>http://publications.europa.eu/resource/authority/access-right/RESTRICTED</xsl:otherwise>
 		</xsl:choose>
 	</xsl:function>
 	
-  </xsl:stylesheet>
+	
+	<xsl:function name="iso19139:mapUsageConstraints" as="xs:string">
+		<!-- there is currently no value in swedisch license to indicate "unknown" or "restricted", an option is to leave the element empty, or reference the anvandningsrestriktioner codelist -->
+		<xsl:param name="const" as="xs:string" required="no" />
+		<xsl:choose>
+			<xsl:when test="$const = 'http://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#CC01.0'">http://creativecommons.org/publicdomain/zero/1.0/</xsl:when>
+			<xsl:when test="$const = 'https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#CCby4.0'">http://creativecommons.org/licenses/by/4.0/</xsl:when>
+			<xsl:when test="$const = 'https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#CCby-sa4.0'">http://creativecommons.org/licenses/by-sa/4.0/</xsl:when>
+			<xsl:when test="$const = 'https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#AnnanBegransning'">http://creativecommons.org/publicdomain/zero/1.0/</xsl:when>
+			<xsl:when test="$const = 'https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#villkorOkanda'">https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#villkorOkanda</xsl:when> <!-- unknown -->
+			<xsl:when test="$const = 'http://inspire.ec.europa.eu/metadata-codelist/ConditionsApplyingToAccessAndUse/noConditionsApply'">http://creativecommons.org/publicdomain/zero/1.0/</xsl:when>
+			<xsl:when test="$const = 'https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#licensBehovs'">https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#licensBehovs</xsl:when> <!-- restricted -->
+			<xsl:otherwise>https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#villkorOkanda</xsl:otherwise>
+		</xsl:choose>  
+	</xsl:function>
+</xsl:stylesheet>
