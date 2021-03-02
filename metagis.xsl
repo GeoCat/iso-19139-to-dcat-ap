@@ -114,7 +114,9 @@
       
 			<xsl:apply-templates mode="record-reference" select="//gmd:MD_Metadata[gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue='dataset']"/>
 		-->
-			<xsl:apply-templates mode="record-reference" select="//gmd:MD_Metadata[gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue='dataset']"/>
+			<xsl:apply-templates mode="record-reference" select="//gmd:MD_Metadata[
+				gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue='dataset' and
+				gmd:contact/gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString != 'SMHI']"/>
 		</dcat:Catalog>
 	</xsl:template>
 

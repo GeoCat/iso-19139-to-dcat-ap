@@ -319,7 +319,9 @@
   <xsl:template match="/">
     <rdf:RDF>
       <xsl:call-template name="catalogue"/>
-      <xsl:apply-templates select="gmd:MD_Metadata[gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue='dataset']|//gmd:MD_Metadata[gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue='dataset']"/>
+      <xsl:apply-templates select="//gmd:MD_Metadata[
+          gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue='dataset' and
+          gmd:contact/gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString != 'SMHI']"/>
     </rdf:RDF>
   </xsl:template>
 
@@ -330,7 +332,7 @@
 
  -->
 
-  <xsl:template match="gmd:MD_Metadata|//gmd:MD_Metadata">
+  <xsl:template match="gmd:MD_Metadata">
 
 <!--
 
@@ -1176,7 +1178,7 @@
           <xsl:for-each select="gmd:distributionInfo/gmd:MD_Distribution">
 <!-- Encoding -->
             <xsl:variable name="Encoding">
-              <xsl:for-each select="gmd:distributionFormat/gmd:MD_Format/gmd:name/*[iso19139:mapFormat(.)!='']">
+              <xsl:for-each select="gmd:distributionFormat/gmd:MD_Format/gmd:name/*[iso19139:mapFormat(.)!=''][1]">
                 <dct:format><xsl:value-of select="iso19139:mapFormat(.)"/></dct:format>
               </xsl:for-each>
             </xsl:variable>
@@ -1822,12 +1824,12 @@
           </prov:Derivation>
         </prov:entityOfInfluence>
       </xsl:when>
--->
+
       <xsl:when test="$role = 'publisher'">
         <dct:publisher>
           <xsl:copy-of select="$ROInfo"/>
         </dct:publisher>
-      </xsl:when>
+      </xsl:when>-->
 <!-- Mapping moved to core profile for compliance with DCAT-AP 2 -->
       <xsl:when test="$role = 'author'">
         <dct:creator>
