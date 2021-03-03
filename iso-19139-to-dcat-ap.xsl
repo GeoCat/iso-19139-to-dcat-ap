@@ -103,7 +103,7 @@
   <xsl:variable name="profile-core-uri">http://data.europa.eu/r5r/</xsl:variable>
   <xsl:variable name="profile-extended-uri">http://data.europa.eu/930/</xsl:variable>
 
-  <xsl:include href="nv.xsl"/>
+  <xsl:include href="geodata.se.xsl"/>
   <xsl:include href="metagis.xsl"/>
 
 <!--
@@ -1178,9 +1178,8 @@
           <xsl:for-each select="gmd:distributionInfo/gmd:MD_Distribution">
 <!-- Encoding -->
             <xsl:variable name="Encoding">
-              <xsl:for-each select="gmd:distributionFormat/gmd:MD_Format/gmd:name/*[iso19139:mapFormat(.)!=''][1]">
-                <dct:format><xsl:value-of select="iso19139:mapFormat(.)"/></dct:format>
-              </xsl:for-each>
+              <xsl:if test="gmd:distributionFormat/gmd:MD_Format/gmd:name/*[iso19139:mapFormat(.)!='']">
+                <dct:format><xsl:value-of select="iso19139:mapFormat(gmd:distributionFormat[*/gmd:name/*[iso19139:mapFormat(.)!='']][1]/gmd:MD_Format/gmd:name/*)"/></dct:format></xsl:if>
             </xsl:variable>
 <!-- Resource locators (access / download URLs) -->
             <xsl:for-each select="gmd:transferOptions/*/gmd:onLine/*">
@@ -2846,17 +2845,19 @@
 
 <!-- Encoding -->
 
-  <xsl:template name="Encoding" match="gmd:distributionFormat[1]/gmd:MD_Format/gmd:name/*">
+
+
+  <!--<xsl:template name="Encoding" match="gmd:distributionFormat[1]/gmd:MD_Format/gmd:name/*">
     <xsl:choose>
       <xsl:when test="@xlink:href and @xlink:href != ''">
         <dct:format rdf:resource="{@xlink:href}"/>
-<!--
+
         <dct:format>
           <rdf:Description rdf:about="{@xlink:href}">
             <rdfs:label><xsl:value-of select="."/></rdfs:label>
           </rdf:Description>
         </dct:format>
--->
+
       </xsl:when>
       <xsl:otherwise>
         
@@ -2864,7 +2865,7 @@
         <dct:format><xsl:value-of select="iso19139:mapFormat(.)"/></dct:format>
       </xsl:otherwise>
     </xsl:choose>
-  </xsl:template>
+  </xsl:template>-->
 
 <!-- Maintenance information -->
 
