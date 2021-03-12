@@ -154,7 +154,7 @@
 	<xsl:choose>
 		<xsl:when test="$protocol = 'HTTP:Information'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$name))}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$Title))}">
 					<!-- Title and  description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
@@ -166,7 +166,7 @@
 		</xsl:when>
 		<xsl:when test="$protocol = 'HTTP:Information:Produktspecifikation'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$name))}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$Title))}">
 					<!-- Title and  description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
@@ -178,7 +178,7 @@
 		</xsl:when>
 		<xsl:when test="$protocol = 'HTTP:Nedladdning:data'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$name))}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$Title))}">
 					<!-- Title and  description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
@@ -191,7 +191,7 @@
 		
 		<xsl:when test="$protocol = 'HTTP:nedladdning:document'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$name))}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$Title))}">
 					<!-- Title and description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
@@ -203,7 +203,7 @@
 		</xsl:when>
 		<xsl:when test="$protocol = 'HTTP:Nedladdning'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$name))}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$Title))}">
 					<!-- Title and description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
@@ -214,7 +214,7 @@
 		</xsl:when>
 		<xsl:when test="$protocol = 'HTTP:Nedladdning:Atom'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$name))}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$Title))}">
 					<!-- Title and description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
@@ -227,7 +227,7 @@
 		
 		<xsl:when test="$protocol = 'HTTP:OGC:WMS'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$name))}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$Title))}">
 					<!-- Title and description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
@@ -239,12 +239,12 @@
 		</xsl:when>
 		<xsl:when test="$protocol = 'HTTP:OGC:WFS'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($linkurl,'/',$dsURI))}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$Title))}">
 					<!-- Title and description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
 			        <dcat:accessURL
-							rdf:resource="{iso19139:processUrl($linkurl)}"/>
+			        	rdf:resource="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$Title))}"/>
 					<dc:format>application/gml+xml</dc:format>
 					<dcatap:availability rdf:resource="http://data.europa.eu/r5r/availability/stable"/>
 				</dcat:Distribution>
@@ -254,9 +254,7 @@
 		<!-- ?? Should dcat:landingPage be detailed with title, description, etc.? -->
 		<xsl:otherwise>
 				<dcat:landingPage>
-					<foaf:Document rdf:about="{iso19139:processUrl($linkurl)}">
-						<xsl:copy-of select="$TitleAndDescription"/>
-					</foaf:Document>
+					<foaf:Document rdf:resource="{iso19139:processUrl($linkurl)}"/>
 				</dcat:landingPage>
 		</xsl:otherwise>
 	</xsl:choose>
