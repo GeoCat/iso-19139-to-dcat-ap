@@ -72,6 +72,8 @@
     xmlns:xsi    = "http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsl    = "http://www.w3.org/1999/XSL/Transform"
     xmlns:iso19139 = "http://geonetwork-opensource.org/schemas/iso19139"
+    xmlns:dcatap  = "http://data.europa.eu/r5r/"
+    xmlns:xs      = "http://www.w3.org/2001/XMLSchema"
     exclude-result-prefixes="earl gco gmd gml gmx i i-gp srv xlink xsi xsl wdrs"
     version="1.0">
 
@@ -1175,149 +1177,12 @@
         <xsl:apply-templates select="gmd:identificationInfo/*/gmd:spatialRepresentationType/gmd:MD_SpatialRepresentationTypeCode"/>
       </xsl:variable>
 
-          <xsl:for-each select="gmd:distributionInfo/gmd:MD_Distribution">
-<!-- Encoding -->
-            <xsl:variable name="Encoding">
-              <xsl:if test="gmd:distributionFormat/gmd:MD_Format/gmd:name/*[iso19139:mapFormat(.)!='']">
-                <dct:format><xsl:value-of select="iso19139:mapFormat(gmd:distributionFormat[*/gmd:name/*[iso19139:mapFormat(.)!='']][1]/gmd:MD_Format/gmd:name/*)"/></dct:format></xsl:if>
-            </xsl:variable>
-<!-- Resource locators (access / download URLs) -->
-            <xsl:for-each select="gmd:transferOptions/*/gmd:onLine/*">
-              <xsl:variable name="url" select="iso19139:processUrl(gmd:linkage/gmd:URL)"/>
-              <xsl:variable name="protocol" select="gmd:protocol/*"/>
-	      <xsl:variable name="protocol-url" select="gmd:protocol/gmx:Anchor/@xlink:href"/>
-              <xsl:variable name="function" select="gmd:function/gmd:CI_OnLineFunctionCode/@codeListValue"/>
-              <xsl:variable name="Title">
-                <xsl:for-each select="gmd:name">
-                  <dct:title xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(gco:CharacterString)"/></dct:title>
-                  <xsl:call-template name="LocalisedString">
-                    <xsl:with-param name="term">dct:title</xsl:with-param>
-                  </xsl:call-template>
-                </xsl:for-each>
-              </xsl:variable>
-              <xsl:variable name="Description">
-                <xsl:for-each select="gmd:description">
-                  <dct:description xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(gco:CharacterString)"/></dct:description>
-                  <xsl:call-template name="LocalisedString">
-                    <xsl:with-param name="term">dct:description</xsl:with-param>
-                  </xsl:call-template>
-                </xsl:for-each>
-              </xsl:variable>
-              <xsl:variable name="TitleAndDescription">
-<!--              
-                <xsl:for-each select="gmd:name/gco:CharacterString">
-                  <dct:title xml:lang="{$MetadataLanguage}"><xsl:value-of select="."/></dct:title>
-                </xsl:for-each>
-                <xsl:for-each select="gmd:description/gco:CharacterString">
-                  <dct:description xml:lang="{$MetadataLanguage}"><xsl:value-of select="."/></dct:description>
-                </xsl:for-each>
--->
-                <xsl:copy-of select="$Title"/>
-                <xsl:copy-of select="$Description"/>
-              </xsl:variable>
-
-      <xsl:choose>
-<!-- Mapping added to the core profile for compliance with DCAT-AP 2 -->	      
-	<xsl:when test="$ResourceType = 'service'">
-          <xsl:call-template name="service-endpoint">
-            <xsl:with-param name="function" select="$function"/>
-            <xsl:with-param name="protocol" select="$protocol"/>
-            <xsl:with-param name="url" select="$url"/>
-          </xsl:call-template>
-          <xsl:if test="$profile = $extended">
-            <xsl:call-template name="service-protocol">
-              <xsl:with-param name="function" select="$function"/>
-              <xsl:with-param name="protocol" select="$protocol"/>
-              <xsl:with-param name="url" select="$url"/>
-            </xsl:call-template>
-          </xsl:if>
-        </xsl:when>
-<!-- Distributions -->
-        <xsl:when test="$ResourceType = 'dataset' or $ResourceType = 'series'">
-          <xsl:variable name="points-to-service">
-            <xsl:call-template name="detect-service">
-              <xsl:with-param name="function" select="$function"/>
-              <xsl:with-param name="protocol" select="$protocol"/>
-              <xsl:with-param name="url" select="$url"/>
-            </xsl:call-template>
-          </xsl:variable>
-	      <xsl:choose>
-                <xsl:when test="$points-to-service = 'yes' or $function = 'download' or $function = 'offlineAccess' or $function = 'order'">
-                  <dcat:distribution>
-                    <dcat:Distribution>
-<!-- Title and description -->
-                      <xsl:copy-of select="$TitleAndDescription"/>
-<!-- Access URL -->
-<!--
-                      <xsl:for-each select="gmd:linkage/gmd:URL">
-                        <dcat:accessURL rdf:resource="{.}"/>
-                      </xsl:for-each>
--->
-		     <!-- <xsl:choose>
-                        <xsl:when test="$points-to-service = 'yes'">
-                          <dcat:accessService rdf:parseType="Resource">
-                            <dcat:DataService rdf:about="$url">
-                            <xsl:call-template name="service-endpoint">
-                              <xsl:with-param name="function" select="$function"/>
-                              <xsl:with-param name="protocol" select="$protocol"/>
-                              <xsl:with-param name="url" select="$url"/>
-                            </xsl:call-template>
-                          
-		            <xsl:if test="$profile = $extended">
-                              <xsl:call-template name="service-protocol">
-                                <xsl:with-param name="function" select="$function"/>
-                                <xsl:with-param name="protocol" select="$protocol"/>
-                                <xsl:with-param name="url" select="$url"/>
-                              </xsl:call-template>
-		            </xsl:if>
-                            </dcat:DataService>
-                          </dcat:accessService>
-			</xsl:when>
-			<xsl:otherwise>
-			</xsl:otherwise>
-		      </xsl:choose>-->
-                      <dcat:accessURL rdf:resource="{$url}"/>
-
-<!-- Constraints related to access and use -->
-                      <xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>
-<!-- Spatial representation type (tentative) -->
-                      <xsl:if test="$profile = $extended">
-                        <xsl:copy-of select="$SpatialRepresentationType"/>
-                      </xsl:if>
-<!-- Encoding -->
-                      <xsl:copy-of select="$Encoding[1]"/>
-<!-- Resource character encoding -->
-                      <xsl:if test="$profile = $extended">
-                        <xsl:copy-of select="$ResourceCharacterEncoding"/>
-                      </xsl:if>
-                    </dcat:Distribution>
-                  </dcat:distribution>
-                </xsl:when>
-                <xsl:when test="$function = 'information' or $function = 'search'">
-<!-- ?? Should foaf:page be detailed with title, description, etc.? -->
-                  <xsl:for-each select="gmd:linkage/gmd:URL">
-                    <foaf:page>
-                      <foaf:Document rdf:about="{iso19139:processUrl(.)}">
-                        <xsl:copy-of select="$TitleAndDescription"/>
-                      </foaf:Document>
-                    </foaf:page>
-                  </xsl:for-each>
-                </xsl:when>
-<!-- ?? Should dcat:landingPage be detailed with title, description, etc.? -->
-                <xsl:otherwise>
-                  <xsl:for-each select="gmd:linkage/gmd:URL">
-                    <dcat:landingPage>
-                      <foaf:Document rdf:about="{iso19139:processUrl(.)}">
-                        <xsl:copy-of select="$TitleAndDescription"/>
-                      </foaf:Document>
-                    </dcat:landingPage>
-                  </xsl:for-each>
-                </xsl:otherwise>
-              </xsl:choose>
-        </xsl:when>
-      </xsl:choose>
-            </xsl:for-each>
-          </xsl:for-each>
+      <xsl:for-each select="gmd:distributionInfo/gmd:MD_Distribution//gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource[starts-with(gmd:linkage/gmd:URL,'http')]">
+        <xsl:call-template name="protocolMatch">
+          <xsl:with-param name="online" select="."></xsl:with-param>
+          <xsl:with-param name="dsURI" select="$ResourceUri"></xsl:with-param>
+        </xsl:call-template>
+      </xsl:for-each>
       
       <!-- dct:accessRights take the first hit on otherconstraints containing an anchor referencing either the inspire or national codelist -->
       <dct:accessRights rdf:resource="{iso19139:mapAccessConstraints(string(gmd:identificationInfo/*/gmd:resourceConstraints/gmd:MD_LegalConstraints/gmd:otherConstraints[../gmd:accessConstraints/gmd:MD_RestrictionCode/@codeListValue='otherRestrictions']/gmx:Anchor/@xlink:href[contains(.,'LimitationsOnPublicAccess') or contains(.,'atkomstrestriktioner.xml')][1]))}"/>

@@ -140,207 +140,124 @@
 	</xsl:template>
 	
 	<xsl:template name="protocolMatch">
-		<xsl:param name="protocol"></xsl:param>
-		<xsl:param name="linkurl"></xsl:param>
-		<xsl:param name="TitleAndDescription"></xsl:param>
-		<xsl:param name="mdURI"></xsl:param>
-		<xsl:param name="Encoding"></xsl:param>
-		<xsl:param name="ConstraintsRelatedToAccessAndUse"></xsl:param>
+		<xsl:param name="online"/>
+		<xsl:param name="dsURI"/>
 		
+		<xsl:variable name="protocol" select="$online/gmd:protocol/gco:CharacterString" />
+		<xsl:variable name="linkurl" select="$online/gmd:linkage/gmd:URL"/>
+		<xsl:variable name="Title" select="$online/gmd:name/gco:CharacterString"/>
+		<xsl:variable name="Description" select="$online/gmd:description/gco:CharacterString"/>
+		<xsl:variable name="TitleAndDescription">
+			<xsl:if test="$Title"><dct:name><xsl:value-of select="$Title"/></dct:name></xsl:if>
+			<xsl:if test="$Description"><dct:description><xsl:value-of select="$Description"/></dct:description></xsl:if>
+		</xsl:variable>
 	<xsl:choose>
 		<xsl:when test="$protocol = 'HTTP:Information'">
 			<dcat:distribution>
-				
-				<dcat:Distribution rdf:about="{$linkurl}/{$mdURI}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$name))}">
 					<!-- Title and  description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
-					<xsl:for-each select="gmd:linkage/gmd:URL">
-						<dcat:accessURL
-							rdf:resource="{iso19139:processUrl(.)}"/>
-					</xsl:for-each>
-					<!-- Constraints related to access and use -->
-					<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>
-					<!-- Spatial representation type (tentative) -->
-					<!-- <xsl:copy-of select="$SpatialRepresentationType"/>-->
-					<!-- Encoding -->
-					<xsl:copy-of select="$Encoding"/>
+					<dcat:accessURL
+							rdf:resource="{iso19139:processUrl($linkurl)}"/>
 					<dc:format>text/html</dc:format>
 				</dcat:Distribution>
 			</dcat:distribution>
 		</xsl:when>
 		<xsl:when test="$protocol = 'HTTP:Information:Produktspecifikation'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{$linkurl}/{$mdURI}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$name))}">
 					<!-- Title and  description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
-					<xsl:for-each select="gmd:linkage/gmd:URL">
-						<dcat:accessURL
-							rdf:resource="{iso19139:processUrl(.)}"/>
-					</xsl:for-each>
-					<!-- Constraints related to access and use -->
-					<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>
-					<!-- Spatial representation type (tentative) -->
-					<!--											<xsl:copy-of select="$SpatialRepresentationType"/>-->
-					<!-- Encoding -->
-					<xsl:copy-of select="$Encoding"/>
+					<dcat:accessURL
+							rdf:resource="{iso19139:processUrl($linkurl)}"/>
 					<dc:format>text/html</dc:format>
-
 				</dcat:Distribution>
 			</dcat:distribution>
 		</xsl:when>
 		<xsl:when test="$protocol = 'HTTP:Nedladdning:data'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{$linkurl}/{$mdURI}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$name))}">
 					<!-- Title and  description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
-					<xsl:for-each select="gmd:linkage/gmd:URL">
-						<dcat:accessURL
-							rdf:resource="{iso19139:processUrl(.)}"/>
-					</xsl:for-each>
-					<!-- Constraints related to access and use -->
-					<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>
-					<!-- Spatial representation type (tentative) -->
-					<!--											<xsl:copy-of select="$SpatialRepresentationType"/>-->
-					<!-- Encoding -->
-					<xsl:copy-of select="$Encoding"/>
+					<dcat:accessURL
+							rdf:resource="{iso19139:processUrl($linkurl)}"/>
 					<dc:format>text/html</dc:format>
-
 				</dcat:Distribution>
 			</dcat:distribution>
 		</xsl:when>
 		
 		<xsl:when test="$protocol = 'HTTP:nedladdning:document'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{$linkurl}/{$mdURI}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$name))}">
 					<!-- Title and description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
-					<xsl:for-each select="gmd:linkage/gmd:URL">
-						<dcat:accessURL
-							rdf:resource="{iso19139:processUrl(.)}"/>
-					</xsl:for-each>
-					<!-- Constraints related to access and use -->
-					<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>
-					<!-- Spatial representation type (tentative) -->
-					<!--											<xsl:copy-of select="$SpatialRepresentationType"/>-->
-					<!-- Encoding -->
-					<xsl:copy-of select="$Encoding"/>
+					<dcat:accessURL
+							rdf:resource="{iso19139:processUrl($linkurl)}"/>
 					<dc:format>application/pdf</dc:format>
-					<!-- Resource character encoding -->
-
 				</dcat:Distribution>
 			</dcat:distribution>
 		</xsl:when>
 		<xsl:when test="$protocol = 'HTTP:Nedladdning'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{$linkurl}/{$mdURI}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$name))}">
 					<!-- Title and description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
-					<xsl:for-each select="gmd:linkage/gmd:URL">
-						<dcat:accessURL
-							rdf:resource="{iso19139:processUrl(.)}"/>
-					</xsl:for-each>
-					<!-- Constraints related to access and use -->
-					<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>
-					<!-- Spatial representation type (tentative) -->
-					<!--											<xsl:copy-of select="$SpatialRepresentationType"/>-->
-					<!-- Encoding -->
-					<xsl:copy-of select="$Encoding"/>
-					<!--		<dc:format>Nedladdning</dc:format>-->
-
+				    <dcat:accessURL
+							rdf:resource="{iso19139:processUrl($linkurl)}"/>
 				</dcat:Distribution>
 			</dcat:distribution>
 		</xsl:when>
 		<xsl:when test="$protocol = 'HTTP:Nedladdning:Atom'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{$linkurl}/{$mdURI}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$name))}">
 					<!-- Title and description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
-					<xsl:for-each select="gmd:linkage/gmd:URL">
-						<dcat:accessURL
-							rdf:resource="{iso19139:processUrl(.)}"/>
-					</xsl:for-each>
-					<!-- Constraints related to access and use -->
-					<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>
-					<!-- Spatial representation type (tentative) -->
-					<!-- <xsl:copy-of select="$SpatialRepresentationType"/>-->
-					<!-- Encoding -->
-					<xsl:copy-of select="$Encoding"/>
+				    <dcat:accessURL
+							rdf:resource="{iso19139:processUrl($linkurl)}"/>
 					<dc:format>application/atom+xml</dc:format>
-
 				</dcat:Distribution>
 			</dcat:distribution>
 		</xsl:when>
 		
 		<xsl:when test="$protocol = 'HTTP:OGC:WMS'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{$linkurl}/{$mdURI}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,'#',$protocol,'/',$name))}">
 					<!-- Title and description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
-					<xsl:for-each select="gmd:linkage/gmd:URL">
-						<dcat:accessURL
-							rdf:resource="{iso19139:processUrl(.)}"/>
-					</xsl:for-each>
-					<!-- Constraints related to access and use -->
-					<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>
-					<!-- Spatial representation type (tentative) -->
-					<!--											<xsl:copy-of select="$SpatialRepresentationType"/>-->
-					<!-- Encoding -->
-					<xsl:copy-of select="$Encoding"/>
-					<dc:format>image/png</dc:format>
-					
+					<dcat:accessURL
+							rdf:resource="{iso19139:processUrl($linkurl)}"/>
+					<dc:format>image/png</dc:format>		
 				</dcat:Distribution>
 			</dcat:distribution>
 		</xsl:when>
 		<xsl:when test="$protocol = 'HTTP:OGC:WFS'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($linkurl,'/',$mdURI))}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($linkurl,'/',$dsURI))}">
 					<!-- Title and description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
-					<xsl:for-each select="gmd:linkage/gmd:URL">
-						<dcat:accessURL
-							rdf:resource="{iso19139:processUrl(.)}"/>
-					</xsl:for-each>
-					<!-- Constraints related to access and use -->
-					<xsl:copy-of select="$ConstraintsRelatedToAccessAndUse"/>
-					<!-- Spatial representation type (tentative) -->
-					<!-- <xsl:copy-of select="$SpatialRepresentationType"/> -->
-					<!-- Encoding -->
-					<xsl:copy-of select="$Encoding"/>
+			        <dcat:accessURL
+							rdf:resource="{iso19139:processUrl($linkurl)}"/>
 					<dc:format>application/gml+xml</dc:format>
-					
-
 					<dcatap:availability rdf:resource="http://data.europa.eu/r5r/availability/stable"/>
 				</dcat:Distribution>
 			</dcat:distribution>
 		</xsl:when>
 		
-		<!--								<xsl:when test="$function = 'information' or $function = 'search'">
-									<xsl:for-each select="gmd:linkage/gmd:URL">
-										<foaf:page>
-											<foaf:Document rdf:about="{.}">
-												<xsl:copy-of select="$TitleAndDescription"/>
-											</foaf:Document>
-										</foaf:page>
-									</xsl:for-each>
-								</xsl:when>
--->
 		<!-- ?? Should dcat:landingPage be detailed with title, description, etc.? -->
 		<xsl:otherwise>
-			<xsl:for-each select="gmd:linkage/gmd:URL">
 				<dcat:landingPage>
-					<foaf:Document rdf:about="{iso19139:processUrl(.)}">
+					<foaf:Document rdf:about="{iso19139:processUrl($linkurl)}">
 						<xsl:copy-of select="$TitleAndDescription"/>
 					</foaf:Document>
 				</dcat:landingPage>
-			</xsl:for-each>
 		</xsl:otherwise>
 	</xsl:choose>
 	
