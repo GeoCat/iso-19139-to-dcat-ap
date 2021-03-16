@@ -86,9 +86,9 @@ DCAT | iso19139 | comment
 dct:name | gmd:name |
 
 
-### Codelist mappings
+## Codelist mappings
 
-## Topic category to DCAT theme
+### Topic category to DCAT theme
 
 iso19139 | DCAT
 --|--
@@ -100,10 +100,10 @@ intelligenceMilitary | http://publications.europa.eu/resource/authority/data-the
 society, structure | http://publications.europa.eu/resource/authority/data-theme/SOCI
 boundaries | http://publications.europa.eu/resource/authority/data-theme/REGI
 geoscientificInformation, utilitiesCommunication, imageryBaseMapsEarthCover, location | http://publications.europa.eu/resource/authority/data-theme/TECH
-inlandWaters, transport'">http://publications.europa.eu/resource/authority/data-theme/TRAN
+inlandWaters, transport | http://publications.europa.eu/resource/authority/data-theme/TRAN
 others | http://publications.europa.eu/resource/authority/data-theme/ENVI
 
-## Usage Constraints
+### Usage Constraints
 
 iso19139 | DCAT
 --|--
@@ -116,7 +116,7 @@ http://inspire.ec.europa.eu/metadata-codelist/ConditionsApplyingToAccessAndUse/n
 https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#licensBehovs | https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#licensBehovs
 others | https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#villkorOkanda
 		
-## Access constraints
+### Access constraints
 
 iso19139 | DCAT
 --|--
@@ -126,7 +126,7 @@ https://resources.geodata.se/codelist/metadata/atkomstrestriktioner.xml#IngenBeg
 https://resources.geodata.se/codelist/metadata/atkomstrestriktioner.xml#OkandaBegransningar | https://resources.geodata.se/codelist/metadata/atkomstrestriktioner.xml#OkandaBegransningar
 Others | http://publications.europa.eu/resource/authority/access-right/RESTRICTED
 
-## Media types
+### Media types
 
 iso19139 | DCAT
 --|--
@@ -139,7 +139,7 @@ FGDB | application/x-filegdb
 GEOJSON | application/geo+json
 SDE Feature Class | application/x-filegdb
 
-## Services
+### Services
 
 iso19139 | DCAT
 --|--
