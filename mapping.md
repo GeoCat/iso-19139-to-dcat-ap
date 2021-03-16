@@ -47,7 +47,7 @@ DCAT | iso19139 | comment
 dcterms:spatial/dct:Location/dcat:bbox | gmd:extent/gmd:EX_GeographicBoundingBox | 
 dcat:keyword | gmd:keyword |
 dcat:theme | gmd:topicCategory | Mapping to EU themes |
-dcterms:issued | gmd:data//@type='publication' |
+dcterms:issued | gmd:date//@type='publication' |
 dcterms:temporal/dcterms:PeriodOfTime | gmd:extent//gmd:EX_TemporalExtent |
 
 ### Class Distribution
@@ -56,7 +56,7 @@ DCAT | iso19139 | comment
 --|--|--
 dcterms:description | gmd:description | 
 dcterms:format | gmd:protocol | Mapping to SWE media types
-dcterms:license | - | Not implemented
+dcterms:license | - | Mapped on dataset level
 dcat:downloadURL | gmd:URL | If protocol matches with downloadable file
 
 ## Optional elements
@@ -76,8 +76,8 @@ dct:identifier | gmd:identifier |
 dct:conformsTo | gmd:referenceSystemInfo//gmd:RS_Identifier, gmd:dataQualityInfo//gmd:specification |
 dct:accessRights | gmd:resourceConstraints/gmd:MD_LegalConstraints [gmd:accessConstraints]/gmd:otherConstraints | Mapping to EU constraints
 dct:license | gmd:resourceConstraints/gmd:MD_LegalConstraints [gmd:usageConstraints]/gmd:otherConstraints | Mapping to SWE licenses
-dct:modified | gmd:data//@type='revision' |
-dct:created | gmd:data//@type='creation' |
+dct:modified | gmd:date//@type='revision' |
+dct:created | gmd:date//@type='creation' |
 
 ### Class Distribution
 
