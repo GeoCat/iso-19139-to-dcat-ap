@@ -893,6 +893,7 @@
           <xsl:apply-templates select="gmd:CI_ResponsibleParty">
             <xsl:with-param name="MetadataLanguage" select="$MetadataLanguage"/>
             <xsl:with-param name="ResourceType" select="$ResourceType"/>
+            <xsl:with-param name="mURI" select="$MetadataUri"/>
           </xsl:apply-templates>
         </xsl:for-each>
         <!-- if no metadata contact, use owner -->
@@ -1026,25 +1027,13 @@
           </xsl:if>
         </xsl:when>
       </xsl:choose>
-<!-- Mapping moved to core profile for compliance with DCAT-AP 2 -->
-<!--
-      <xsl:if test="$profile = $extended">
--->
+
         <xsl:if test="$InspireResourceType != ''">
           <dct:type rdf:resource="{$ResourceTypeCodelistUri}/{$ResourceType}"/>
         </xsl:if>
-<!--
-      </xsl:if>
--->
-<!--
-      <dct:title xml:lang="{$MetadataLanguage}"><xsl:value-of select="$ResourceTitle"/></dct:title>
--->
+
       <xsl:copy-of select="$ResourceTitle"/>
-<!--      
-      <dct:description xml:lang="{$MetadataLanguage}">
-        <xsl:value-of select="normalize-space($ResourceAbstract)"/>
-      </dct:description>
--->      
+    
       <xsl:copy-of select="$ResourceAbstract"/>
 <!-- Maintenance information (tentative) -->
       <xsl:for-each select="gmd:identificationInfo/*/gmd:resourceMaintenance">
@@ -1314,6 +1303,9 @@
   <xsl:template name="ResponsibleOrganisation" match="gmd:CI_ResponsibleParty">
     <xsl:param name="MetadataLanguage"/>
     <xsl:param name="ResourceType"/>
+    <xsl:param name="mURI">
+      <xsl:value-of select="'nill'"/>
+    </xsl:param>
     <xsl:param name="role">
       <xsl:value-of select="gmd:role/gmd:CI_RoleCode/@codeListValue"/>
     </xsl:param>
@@ -1503,29 +1495,13 @@
             </org:memberOf>
           </xsl:if>
         </xsl:if>
-        <xsl:if test="$IndividualName = '' and $OrganisationName != ''">
-<!--        
-          <foaf:name xml:lang="{$MetadataLanguage}">
-            <xsl:value-of select="$OrganisationName"/>
-          </foaf:name>
--->          
+        <xsl:if test="$IndividualName = '' and $OrganisationName != ''">       
           <xsl:copy-of select="$OrganisationName-FOAF"/>
         </xsl:if>
         <xsl:copy-of select="$Telephone"/>
         <xsl:copy-of select="$Email"/>
         <xsl:copy-of select="$URL"/>
-        <xsl:copy-of select="$Address"/>
-<!--        
-      <xsl:for-each select="gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString">
-        <foaf:mbox rdf:resource="mailto:{.}"/>
-      </xsl:for-each>
-      <xsl:for-each select="gmd:contactInfo/gmd:CI_Contact/gmd:onlineResource/gmd:CI_OnlineResource/gmd:linkage/gmd:URL">
--->        
-<!-- ?? Should another property be used instead? E.g., foaf:homepage? -->
-<!--
-        <foaf:workplaceHomepage rdf:resource="{.}"/>
-      </xsl:for-each>
--->        
+        <xsl:copy-of select="$Address"/>     
       </xsl:variable>
       <xsl:choose>
         <xsl:when test="$IndividualURI != ''">
@@ -1535,7 +1511,7 @@
           <foaf:Organization rdf:about="{$OrganisationURI}#foaf"/>
         </xsl:when>
         <xsl:otherwise>
-          <rdf:Description>
+          <rdf:Description rdf:about="{iso19139:processUrl(concat($mURI,'#foaf/',(if ($IndividualName!='') then $IndividualName else  $OrganisationName)))}">
             <xsl:copy-of select="$info"/>
           </rdf:Description>
         </xsl:otherwise>
@@ -1593,17 +1569,17 @@
       </xsl:variable>
       <xsl:choose>
         <xsl:when test="$IndividualURI != ''">
-          <rdf:Description rdf:resource="{$IndividualURI}#vcard">
+          <rdf:Description rdf:about="{$IndividualURI}#vcard">
             <xsl:copy-of select="$info"/>
           </rdf:Description>
         </xsl:when>
         <xsl:when test="$OrganisationURI != ''">
-          <rdf:Description rdf:resource="{$OrganisationURI}#vcard">
+          <rdf:Description rdf:about="{$OrganisationURI}#vcard">
             <xsl:copy-of select="$info"/>
           </rdf:Description>
         </xsl:when>
         <xsl:otherwise>
-          <rdf:Description>
+          <rdf:Description rdf:about="{iso19139:processUrl(concat($mURI,'#vcard/',(if ($IndividualName!='') then $IndividualName else  $OrganisationName)))}">
             <xsl:copy-of select="$info"/>
           </rdf:Description>
         </xsl:otherwise>
@@ -1655,18 +1631,18 @@
       </xsl:when>
 -->
 <!-- Mapping applied also to services for compliance with DCAT-AP 2 -->
+      <xsl:when test="$role = 'issued'">
+        <dcat:contactPoint>
+          <xsl:copy-of select="$ResponsibleParty"/>
+        </dcat:contactPoint>
+      </xsl:when>
+
       <xsl:when test="$role = 'pointOfContact'">
         <dcat:contactPoint>
           <xsl:copy-of select="$ResponsibleParty"/>
         </dcat:contactPoint>
       </xsl:when>
-<!--
-      <xsl:when test="$role = 'pointOfContact' and $ResourceType != 'service'">
-        <dcat:contactPoint>
-          <xsl:copy-of select="$ResponsibleParty"/>
-        </dcat:contactPoint>
-      </xsl:when>
--->
+
 <!--
       <xsl:when test="$role = 'principalInvestigator'">
         <dct:contributor>
