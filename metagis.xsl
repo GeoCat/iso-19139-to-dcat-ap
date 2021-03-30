@@ -349,7 +349,7 @@
 	
 	<xsl:function name="iso19139:mapAccessConstraints" as="xs:string">
 		<!-- there is currently no value in swedisch access rights to indicate "unknown", an option is to leave the element empty -->
-		<xsl:param name="const" as="xs:string" required="no" />
+		<xsl:param name="const" as="xs:string" />
 		<xsl:choose>
 			<xsl:when test="$const = 'http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations'">http://publications.europa.eu/resource/authority/access-right/PUBLIC</xsl:when>
 			<xsl:when test="$const = 'https://resources.geodata.se/codelist/metadata/atkomstrestriktioner.xml#IngaBegransningar'">http://publications.europa.eu/resource/authority/access-right/PUBLIC</xsl:when>
@@ -362,7 +362,7 @@
 	
 	<xsl:function name="iso19139:mapUsageConstraints" as="xs:string">
 		<!-- there is currently no value in swedisch license to indicate "unknown" or "restricted", an option is to leave the element empty, or reference the anvandningsrestriktioner codelist -->
-		<xsl:param name="const" as="xs:string" required="no" />
+		<xsl:param name="const" as="xs:string" />
 		<xsl:choose>
 			<xsl:when test="$const = 'http://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#CC01.0'">http://creativecommons.org/publicdomain/zero/1.0/</xsl:when>
 			<xsl:when test="$const = 'https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#CCby4.0'">http://creativecommons.org/licenses/by/4.0/</xsl:when>
