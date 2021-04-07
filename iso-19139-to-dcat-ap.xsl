@@ -1489,7 +1489,7 @@
                   <foaf:Organization rdf:about="{$OrganisationURI}"/>                  
                 </xsl:when>
                 <xsl:otherwise>
-                  <foaf:Organization rdf:about="{iso19139:processUrl(concat($catMDBaseUrl,'/',//gmd:fileIdentifier/*,'#',(if ($IndividualName!='') then $IndividualName else  $OrganisationName)))}"/>                 
+                  <foaf:Organization rdf:about="{iso19139:processUrl(concat($catMDBaseUrl,'#foaf/',$OrganisationName,'/',$IndividualName))}"/>                 
                 </xsl:otherwise>
               </xsl:choose>
             </org:memberOf>
@@ -1511,7 +1511,7 @@
           <foaf:Organization rdf:about="{$OrganisationURI}#foaf"/>
         </xsl:when>
         <xsl:otherwise>
-          <rdf:Description rdf:about="{iso19139:processUrl(concat($mURI,'#foaf/',(if ($IndividualName!='') then $IndividualName else  $OrganisationName)))}">
+          <rdf:Description rdf:about="{iso19139:processUrl(concat($catMDBaseUrl,'#foaf/',$OrganisationName,'/',$IndividualName))}">
             <xsl:copy-of select="$info"/>
           </rdf:Description>
         </xsl:otherwise>
@@ -1567,7 +1567,7 @@
       </xsl:for-each>
 -->        
       </xsl:variable>
-      <xsl:choose>
+     <!-- <xsl:choose>
         <xsl:when test="$IndividualURI != ''">
           <rdf:Description rdf:about="{$IndividualURI}#vcard">
             <xsl:copy-of select="$info"/>
@@ -1578,12 +1578,12 @@
             <xsl:copy-of select="$info"/>
           </rdf:Description>
         </xsl:when>
-        <xsl:otherwise>
-          <rdf:Description rdf:about="{iso19139:processUrl(concat($mURI,'#vcard/',(if ($IndividualName!='') then $IndividualName else  $OrganisationName)))}">
+        <xsl:otherwise>-->
+          <rdf:Description rdf:about="{iso19139:processUrl(concat($catMDBaseUrl,'#vcard/',$OrganisationName,'/',$IndividualName))}">
             <xsl:copy-of select="$info"/>
           </rdf:Description>
-        </xsl:otherwise>
-      </xsl:choose>
+       <!-- </xsl:otherwise>
+      </xsl:choose>-->
     </xsl:param>
     <xsl:choose>
 <!--
