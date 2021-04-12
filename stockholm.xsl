@@ -7,7 +7,7 @@
 	<xsl:variable name="iso2letterLanguageCode">sv</xsl:variable>
 	<xsl:variable name="catTitle">Stockholms stads dataportal</xsl:variable>
 	<xsl:variable name="catURL">https://dataportalen.stockholm.se</xsl:variable>
-	<xsl:variable name="catMDBaseUrl">https://resources.stockholm.se/metadata</xsl:variable>
+	<xsl:variable name="catMDBaseUrl">https://dataportalen.stockholm.se/dataportalen/GetMetaDataById?id=</xsl:variable>
 	<xsl:variable name="catCLBaseUrl">https://resources.stockholm.se/code-list</xsl:variable>
 	<xsl:variable name="catDataBaseUrl">https://resources.stockholm.se/data</xsl:variable>
 	<xsl:variable name="catGNBaseUrl">https://dataportalen.stockholm.se/geonetwork</xsl:variable>

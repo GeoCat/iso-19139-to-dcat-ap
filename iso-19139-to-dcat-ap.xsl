@@ -371,7 +371,7 @@
         <xsl:value-of select="$mURI"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="concat($catMDBaseUrl,'/',$mURI[1])"/>
+        <xsl:value-of select="concat($catMDBaseUrl,$mURI[1])"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:param>
@@ -1953,7 +1953,7 @@
         </xsl:when>
         <xsl:otherwise>
           <dct:conformsTo>
-            <dct:Standard rdf:about="{concat($catMDBaseUrl,'/',//gmd:fileIdentifier/*,'#specification')}">
+            <dct:Standard rdf:about="{concat($catMDBaseUrl,//gmd:fileIdentifier/*,'#specification')}">
               <xsl:copy-of select="$specinfo"/>
             </dct:Standard>
           </dct:conformsTo>
@@ -2157,7 +2157,7 @@
 
     <xsl:param name="GeoJSONLiteral">{"type":"Polygon","crs":{"type":"name","properties":{"name":"<xsl:value-of select="$SrsUrn"/>"}},"coordinates":[[[<xsl:value-of select="$west"/><xsl:text>,</xsl:text><xsl:value-of select="$north"/>],[<xsl:value-of select="$east"/><xsl:text>,</xsl:text><xsl:value-of select="$north"/>],[<xsl:value-of select="$east"/><xsl:text>,</xsl:text><xsl:value-of select="$south"/>],[<xsl:value-of select="$west"/><xsl:text>,</xsl:text><xsl:value-of select="$south"/>],[<xsl:value-of select="$west"/><xsl:text>,</xsl:text><xsl:value-of select="$north"/>]]]}</xsl:param>
     <dct:spatial>
-      <dct:Location><!-- rdf:about="{concat($catMDBaseUrl,'/',//gmd:fileIdentifier/gco:CharacterString,'#spatial')}">-->
+      <dct:Location><!-- rdf:about="{concat($catMDBaseUrl,//gmd:fileIdentifier/gco:CharacterString,'#spatial')}">-->
 <!-- DEPRECATED: Mapping kept for backward compatibility with GeoDCAT-AP v1.* -->      
 <!-- Recommended geometry encodings -->
       <locn:geometry rdf:datatype="{$gsp}wktLiteral"><xsl:value-of select="$WKTLiteral"/></locn:geometry>
