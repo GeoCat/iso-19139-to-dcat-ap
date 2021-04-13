@@ -7,7 +7,7 @@
 	<xsl:variable name="iso2letterLanguageCode">sv</xsl:variable>
 	<xsl:variable name="catTitle">Nationell Geodataportal</xsl:variable>
 	<xsl:variable name="catURL">https://www.geodata.se/geodataportalen</xsl:variable>
-	<xsl:variable name="catMDBaseUrl">https://resources.geodata.se/metadata</xsl:variable>
+	<xsl:variable name="catMDBaseUrl">https://resources.geodata.se/metadata/</xsl:variable>
 	<xsl:variable name="catCLBaseUrl">https://resources.geodata.se/code-list</xsl:variable>
 	<xsl:variable name="catDataBaseUrl">https://resources.geodata.se/data</xsl:variable>
 	<xsl:variable name="catGNBaseUrl">https://www.geodata.se/geodataportalen</xsl:variable>

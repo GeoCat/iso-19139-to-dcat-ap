@@ -5,8 +5,8 @@
 	<!-- NV -->
 	<xsl:variable name="iso2letterLanguageCode">sv</xsl:variable>
 	<xsl:variable name="catTitle">Naturvårdsverkets miljödatakatalog</xsl:variable>
-	<xsl:variable name="catURL">https://miljodataportalen.naturvardsverket.se/miljodataportalen/</xsl:variable>
-	<xsl:variable name="catMDBaseUrl">https://resources.naturvardsverket.se/metadata</xsl:variable>
+	<xsl:variable name="catURL">https://miljodataportalen.naturvardsverket.se/miljodataportalen</xsl:variable>
+	<xsl:variable name="catMDBaseUrl">https://resources.naturvardsverket.se/metadata/</xsl:variable>
 	<xsl:variable name="catDataBaseUrl">https://resources.naturvardsverket.se/data</xsl:variable>
 	<xsl:variable name="catGNBaseUrl">https://metadatakatalogen.naturvardsverket.se/geonetwork</xsl:variable>
 	<xsl:variable name="catDescription">Naturvårdsverkets Miljödataportal</xsl:variable>
