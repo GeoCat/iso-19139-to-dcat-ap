@@ -253,9 +253,7 @@
 		
 		<!-- ?? Should dcat:landingPage be detailed with title, description, etc.? -->
 		<xsl:otherwise>
-				<dcat:landingPage>
-					<foaf:Document rdf:resource="{iso19139:processUrl($linkurl)}"/>
-				</dcat:landingPage>
+				<dcat:landingPage rdf:resource="{iso19139:processUrl($linkurl)}"/>
 		</xsl:otherwise>
 	</xsl:choose>
 	
@@ -359,6 +357,22 @@
 		</xsl:choose>
 	</xsl:function>
 	
+	<xsl:function name="iso19139:fetchDSID">
+		<!-- extracts the uuid from metadata url, tries to use the uuid to find a metadata record, inside the dsid -->
+		<xsl:param name="mdurl" as="xs:string" />
+		<xsl:param name="md" />
+		<xsl:variable name="mdid" select="tokenize(tokenize(tokenize($mdurl,'id=')[2],'&amp;')[1],'#')[1]"/>
+		<xsl:if test="$mdid!=''">
+			<xsl:variable name="dsid" select="$md//gmd:MD_Metadata[gmd:fileIdentifier/gco:CharacterString=$mdid]/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:identifier/*/gmd:code/*"/>
+			<xsl:choose>
+				<xsl:when test="starts-with($dsid/@xlink:href,'http')">
+					<xsl:value-of select="$dsid/@xlink:href"/>
+				</xsl:when>
+				<xsl:when test="$dsid != ''"><xsl:value-of select="$dsid"/></xsl:when>
+			</xsl:choose>		
+		</xsl:if>
+	</xsl:function>
+	
 	
 	<xsl:function name="iso19139:mapUsageConstraints" as="xs:string">
 		<!-- there is currently no value in swedisch license to indicate "unknown" or "restricted", an option is to leave the element empty, or reference the anvandningsrestriktioner codelist -->
@@ -374,4 +388,5 @@
 			<xsl:otherwise>https://resources.geodata.se/codelist/metadata/anvandningsrestriktioner.xml#villkorOkanda</xsl:otherwise>
 		</xsl:choose>  
 	</xsl:function>
+
 </xsl:stylesheet>
