@@ -1318,7 +1318,7 @@
         </xsl:variable>
 -->
 <!-- Resource locators (access / download URLs) -->
-      <xsl:for-each select="gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource[starts-with(gmd:linkage/gmd:URL,'http')]">
+        <xsl:for-each select="gmd:distributor/gmd:MD_Distributor/gmd:distributorTransferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource[starts-with(gmd:linkage/gmd:URL,'http')]">
         <xsl:choose>
           <xsl:when test="$ResourceType = 'service'">
             <!-- only service endpoints -->
