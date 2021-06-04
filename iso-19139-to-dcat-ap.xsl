@@ -1313,26 +1313,26 @@
       <xsl:value-of select="concat($ResponsiblePartyRoleCodelistUri,'/',$role)"/>
     </xsl:param>
     <xsl:param name="IndividualURI">
-      <xsl:value-of select="normalize-space(gmd:individualName/*/@xlink:href)"/>
+      <!--<xsl:value-of select="normalize-space(gmd:individualName/*/@xlink:href)"/>-->
     </xsl:param>
     <xsl:param name="IndividualName">
-      <xsl:value-of select="normalize-space(gmd:individualName/*)"/>
+      <!--<xsl:value-of select="normalize-space(gmd:individualName/*)"/>-->
     </xsl:param>
     <xsl:param name="IndividualName-FOAF">
-      <xsl:for-each select="gmd:individualName">
+      <!--<xsl:for-each select="gmd:individualName">
         <foaf:name xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(*[self::gco:CharacterString|gmx:Anchor])"/></foaf:name>
         <xsl:call-template name="LocalisedString">
           <xsl:with-param name="term">foaf:name</xsl:with-param>
         </xsl:call-template>
-      </xsl:for-each>
+      </xsl:for-each>-->
     </xsl:param>
     <xsl:param name="IndividualName-vCard">
-      <xsl:for-each select="gmd:individualName">
+      <!--<xsl:for-each select="gmd:individualName">
         <vcard:fn xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(*[self::gco:CharacterString|gmx:Anchor])"/></vcard:fn>
         <xsl:call-template name="LocalisedString">
           <xsl:with-param name="term">vcard:fn</xsl:with-param>
         </xsl:call-template>
-      </xsl:for-each>
+      </xsl:for-each>-->
     </xsl:param>
     <xsl:param name="OrganisationURI">
       <xsl:value-of select="normalize-space(gmd:organisationName/*/@xlink:href)"/>
@@ -1758,7 +1758,8 @@
     </xsl:choose>
   </xsl:template>
 -->
-  <xsl:template name="ResourceLocator" match="gmd:transferOptions/*/gmd:onLine/*/gmd:linkage">
+  
+    <xsl:template name="ResourceLocator" match="gmd:distributorTransferOptions/*/gmd:onLine/*/gmd:linkage">
     <xsl:param name="MetadataLanguage"/>
     <xsl:param name="ResourceType"/>
     <xsl:choose>
