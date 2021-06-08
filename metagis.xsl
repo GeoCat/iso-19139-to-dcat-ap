@@ -161,7 +161,7 @@
 	<xsl:choose>
 		<xsl:when test="$protocol = 'HTTP:Information'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($linkurl,$separator,$protocol,'/',position()))}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,$separator,$protocol,'/',position()))}">
 					<!-- Title and  description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
@@ -173,7 +173,7 @@
 		</xsl:when>
 		<xsl:when test="$protocol = 'HTTP:Information:Produktspecifikation'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($linkurl,$separator,$protocol,'/',position()))}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,$separator,$protocol,'/',position()))}">
 					<!-- Title and  description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
@@ -185,7 +185,7 @@
 		</xsl:when>
 		<xsl:when test="$protocol = 'HTTP:Nedladdning:data'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($linkurl,$separator,$protocol,'/',position()))}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,$separator,$protocol,'/',position()))}">
 					<!-- Title and  description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
@@ -198,7 +198,7 @@
 		
 		<xsl:when test="$protocol = 'HTTP:nedladdning:document'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($linkurl,$separator,$protocol,'/',position()))}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,$separator,$protocol,'/',position()))}">
 					<!-- Title and description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
@@ -210,7 +210,7 @@
 		</xsl:when>
 		<xsl:when test="$protocol = 'HTTP:Nedladdning'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($linkurl,$separator,$protocol,'/',position()))}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,$separator,$protocol,'/',position()))}">
 					<!-- Title and description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
@@ -221,7 +221,7 @@
 		</xsl:when>
 		<xsl:when test="$protocol = 'HTTP:Nedladdning:Atom'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($linkurl,$separator,$protocol,'/',position()))}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,$separator,$protocol,'/',position()))}">
 					<!-- Title and description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
@@ -233,7 +233,7 @@
 		</xsl:when>
 		<xsl:when test="$protocol = 'HTTP:OGC:WMS'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($linkurl,$separator,$protocol,'/',position()))}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,$separator,$protocol,'/',position()))}">
 					<!-- Title and description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
@@ -245,7 +245,7 @@
 		</xsl:when>
 		<xsl:when test="$protocol = 'HTTP:OGC:WFS'">
 			<dcat:distribution>
-				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($linkurl,$separator,$protocol,'/',position()))}">
+				<dcat:Distribution rdf:about="{iso19139:processUrl(concat($dsURI,$separator,$protocol,'/',position()))}">
 					<!-- Title and description -->
 					<xsl:copy-of select="$TitleAndDescription"/>
 					<!-- Access URL -->
