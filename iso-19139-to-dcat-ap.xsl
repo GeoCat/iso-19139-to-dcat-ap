@@ -1165,8 +1165,8 @@
       <xsl:variable name="SpatialRepresentationType">
         <xsl:apply-templates select="gmd:identificationInfo/*/gmd:spatialRepresentationType/gmd:MD_SpatialRepresentationTypeCode"/>
       </xsl:variable>
-
-      <xsl:for-each select="gmd:distributionInfo/gmd:MD_Distribution//gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource[starts-with(gmd:linkage/gmd:URL,'http')]">
+      <xsl:for-each select="
+        gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorTransferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource[starts-with(gmd:linkage/gmd:URL,'http')]">
         <xsl:call-template name="protocolMatch">
           <xsl:with-param name="online" select="."></xsl:with-param>
           <xsl:with-param name="dsURI" select="$ResourceUri"></xsl:with-param>
