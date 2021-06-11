@@ -148,7 +148,7 @@
 		<xsl:variable name="Title" select="$online/gmd:name/gco:CharacterString"/>
 		<xsl:variable name="Description" select="$online/gmd:description/gco:CharacterString"/>
 		<xsl:variable name="TitleAndDescription">
-			<xsl:if test="$Title"><dct:name><xsl:value-of select="$Title"/></dct:name></xsl:if>
+			<xsl:if test="$Title"><dct:title><xsl:value-of select="$Title"/></dct:title></xsl:if>
 			<xsl:if test="$Description"><dct:description><xsl:value-of select="$Description"/></dct:description></xsl:if>
 		</xsl:variable>
 		<xsl:variable name="separator">
@@ -167,7 +167,7 @@
 					<!-- Access URL -->
 					<dcat:accessURL
 							rdf:resource="{iso19139:processUrl($linkurl)}"/>
-					<dc:format>text/html</dc:format>
+					<dct:format>text/html</dct:format>
 				</dcat:Distribution>
 			</dcat:distribution>
 		</xsl:when>
@@ -179,7 +179,7 @@
 					<!-- Access URL -->
 					<dcat:accessURL
 							rdf:resource="{iso19139:processUrl($linkurl)}"/>
-					<dc:format>text/html</dc:format>
+					<dct:format>text/html</dct:format>
 				</dcat:Distribution>
 			</dcat:distribution>
 		</xsl:when>
@@ -191,7 +191,7 @@
 					<!-- Access URL -->
 					<dcat:accessURL
 							rdf:resource="{iso19139:processUrl($linkurl)}"/>
-					<dc:format>text/html</dc:format>
+					<dct:format>text/html</dct:format>
 				</dcat:Distribution>
 			</dcat:distribution>
 		</xsl:when>
@@ -204,7 +204,7 @@
 					<!-- Access URL -->
 					<dcat:accessURL
 							rdf:resource="{iso19139:processUrl($linkurl)}"/>
-					<dc:format>application/pdf</dc:format>
+					<dct:format>application/pdf</dct:format>
 				</dcat:Distribution>
 			</dcat:distribution>
 		</xsl:when>
@@ -227,7 +227,7 @@
 					<!-- Access URL -->
 					<dcat:accessURL
 						rdf:resource="{iso19139:processUrl($linkurl)}"/>
-					<dc:format>application/atom+xml</dc:format>
+					<dct:format>application/atom+xml</dct:format>
 				</dcat:Distribution>
 			</dcat:distribution>
 		</xsl:when>
@@ -239,7 +239,7 @@
 					<!-- Access URL -->
 					<dcat:accessURL
 							rdf:resource="{iso19139:processUrl($linkurl)}"/>
-					<dc:format>application/vnd.ogc.wms_xml</dc:format>		
+					<dct:format>application/vnd.ogc.wms_xml</dct:format>		
 				</dcat:Distribution>
 			</dcat:distribution>
 		</xsl:when>
@@ -251,7 +251,7 @@
 					<!-- Access URL -->
 			        <dcat:accessURL
 			        	rdf:resource="{iso19139:processUrl($linkurl)}"/>
-					<dc:format>application/vnd.ogc.wfs_xml</dc:format>
+					<dct:format>application/vnd.ogc.wfs_xml</dct:format>
 					<dcatap:availability rdf:resource="http://data.europa.eu/r5r/availability/stable"/>
 				</dcat:Distribution>
 			</dcat:distribution>
